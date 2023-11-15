@@ -33,12 +33,12 @@ const jwtConfig = {
   refreshTokenSecret: process.env.NEXT_PUBLIC_JWT_REFRESH_TOKEN_SECRET
 }
 mock.onPost('/jwt/login').reply(request => {
-  const { email, password } = JSON.parse(request.data)
+  const { username, password } = JSON.parse(request.data)
 
   let error = {
     email: ['Something went wrong']
   }
-  const user = users.find(u => u.email === email && u.password === password)
+  const user = users.find(u => u.username === username && u.password === password)
   if (user) {
     const accessToken = jwt.sign({ id: user.id }, jwtConfig.secret, { expiresIn: jwtConfig.expirationTime })
 
