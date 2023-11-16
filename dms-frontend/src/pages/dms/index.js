@@ -4,10 +4,41 @@ import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
+import CardStatisticsSquare from 'src/views/pages/dms/CardStatisticsSquare'
 
 const Home = () => {
+  const stats = [
+    {
+      stats: '97.8k',
+      title: 'Orders',
+      avatarColor: 'error',
+      icon: 'tabler:briefcase'
+    },
+    {
+      stats: '3.4k',
+      title: 'Review',
+      avatarColor: 'success',
+      icon: 'tabler:message-dots'
+    },
+    {
+      stats: '97.8k',
+      title: 'Orders',
+      avatarColor: 'error',
+      icon: 'tabler:briefcase'
+    },
+    {
+      stats: '3.4k',
+      title: 'Review',
+      avatarColor: 'success',
+      icon: 'tabler:message-dots'
+    }
+  ];
+
   return (
     <Grid container spacing={6}>
+      <Grid item xs={12}>
+        <CardStatisticsSquare data={stats} />
+      </Grid>
       <Grid item xs={12}>
         <Card>
           <CardHeader title='Kick start your project 🚀'></CardHeader>
