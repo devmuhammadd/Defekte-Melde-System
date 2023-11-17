@@ -1,5 +1,5 @@
-from app.core.security import create_access_token, decode_access_token
-from app.db.repository.user import create_new_user, get_user_by_username
+from app.utils.user import create_access_token, decode_access_token
+from app.db.models.user import create_new_user, get_user_by_username
 from app.db.session import get_db
 from fastapi import APIRouter, HTTPException, Request
 from fastapi import Depends

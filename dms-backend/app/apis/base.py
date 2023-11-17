@@ -1,4 +1,4 @@
-from app.apis.v1 import user_routes
+from app.apis import user_routes
 from fastapi import APIRouter
 
 api_router = APIRouter()
