@@ -9,28 +9,22 @@ import CardStatisticsSquare from 'src/views/pages/dms/CardStatisticsSquare'
 const Home = () => {
   const stats = [
     {
-      stats: '97.8k',
-      title: 'Orders',
+      stats: '19',
+      title: 'Opened Tickets',
+      avatarColor: 'primary',
+      icon: 'ph:ticket'
+    },
+    {
+      stats: '12',
+      title: 'In-progress Tickets',
       avatarColor: 'error',
-      icon: 'tabler:briefcase'
+      icon: 'lets-icons:time-progress-fill'
     },
     {
-      stats: '3.4k',
-      title: 'Review',
+      stats: '65',
+      title: 'Completed Tickets',
       avatarColor: 'success',
-      icon: 'tabler:message-dots'
-    },
-    {
-      stats: '97.8k',
-      title: 'Orders',
-      avatarColor: 'error',
-      icon: 'tabler:briefcase'
-    },
-    {
-      stats: '3.4k',
-      title: 'Review',
-      avatarColor: 'success',
-      icon: 'tabler:message-dots'
+      icon: 'carbon:task-complete'
     }
   ];
 
