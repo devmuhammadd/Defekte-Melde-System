@@ -18,3 +18,9 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
         to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM
     )
     return encoded_jwt
+
+
+def decode_access_token(access_token: str):
+    decoded_jwt = jwt.decode(access_token,
+                             settings.SECRET_KEY, settings.ALGORITHM)
+    return decoded_jwt['sub']

@@ -20,3 +20,8 @@ class ShowUser(BaseModel):
 
     class Config:  # tells pydantic to convert even non dict obj to json
         orm_mode = True
+
+
+class UserLogin(BaseModel):
+    username: constr(min_length=3, max_length=50)
+    password: str = Field(min_length=4)

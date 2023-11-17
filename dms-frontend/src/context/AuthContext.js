@@ -41,7 +41,7 @@ const AuthProvider = ({ children }) => {
           })
           .then(async response => {
             setLoading(false)
-            setUser({ ...response.data.userData })
+            setUser({ ...response.data, role: 'user' })
           })
           .catch(() => {
             localStorage.removeItem('userData')
@@ -65,7 +65,7 @@ const AuthProvider = ({ children }) => {
     axios
       .post(authConfig.registerEndpoint, params)
       .then(async response => {
-        window.localStorage.setItem(authConfig.storageTokenKeyName, response.data.token.access_token)
+        window.localStorage.setItem(authConfig.storageTokenKeyName, response.data.token.accessToken)
         const returnUrl = router.query.returnUrl
         setUser({ ...response.data.user, role: 'user' })
         window.localStorage.setItem('userData', JSON.stringify({ ...response.data.user, role: 'user' }))
@@ -78,13 +78,10 @@ const AuthProvider = ({ children }) => {
   }
 
   const handleLogin = (params, errorCallback) => {
-    const formData = new FormData();
-    formData.append('username', params.username);
-    formData.append('password', params.password);
     axios
-      .post(authConfig.loginEndpoint, formData)
+      .post(authConfig.loginEndpoint, params)
       .then(async response => {
-        window.localStorage.setItem(authConfig.storageTokenKeyName, response.data.token.access_token)
+        window.localStorage.setItem(authConfig.storageTokenKeyName, response.data.token.accessToken)
         const returnUrl = router.query.returnUrl
         setUser({ ...response.data.user, role: 'user' })
         window.localStorage.setItem('userData', JSON.stringify({ ...response.data.user, role: 'user' }))
