@@ -79,7 +79,7 @@ const FormControlLabel = styled(MuiFormControlLabel)(({ theme }) => ({
 const schema = yup.object().shape({
   email: yup.string().email().required(),
   username: yup.string().required(),
-  full_name: yup.string().required(),
+  fullName: yup.string().required(),
   password: yup.string().min(5).required()
 })
 
@@ -107,8 +107,8 @@ const Register = () => {
   })
 
   const onSubmit = data => {
-    const { email, username, password, full_name } = data
-    auth.register({ email, username, password, full_name }, () => {
+    const { email, username, password, fullName } = data
+    auth.register({ email, username, password, fullName }, () => {
       setError('username', {
         type: 'manual',
         message: 'Unable to create an account with this username!'
@@ -194,7 +194,6 @@ const Register = () => {
                   render={({ field: { value, onChange, onBlur } }) => (
                     <CustomTextField
                       fullWidth
-                      autoFocus
                       label='Username'
                       value={value}
                       onBlur={onBlur}
@@ -227,7 +226,7 @@ const Register = () => {
               </Box>
               <Box sx={{ mb: 4 }}>
                 <Controller
-                  name='full_name'
+                  name='fullName'
                   control={control}
                   rules={{ required: true }}
                   render={({ field: { value, onChange, onBlur } }) => (
@@ -238,8 +237,8 @@ const Register = () => {
                       onBlur={onBlur}
                       onChange={onChange}
                       placeholder='Full Name'
-                      error={Boolean(errors.full_name)}
-                      {...(errors.full_name && { helperText: errors.full_name.message })}
+                      error={Boolean(errors.fullName)}
+                      {...(errors.fullName && { helperText: errors.fullName.message })}
                     />
                   )}
                 />

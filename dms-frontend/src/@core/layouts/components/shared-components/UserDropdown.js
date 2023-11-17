@@ -93,7 +93,7 @@ const UserDropdown = props => {
         }}
       >
         <Avatar
-          alt={user?.full_name}
+          alt={user?.fullName}
           src='/images/avatars/1.png'
           onClick={handleDropdownOpen}
           sx={{ width: 38, height: 38 }}
@@ -117,10 +117,10 @@ const UserDropdown = props => {
                 horizontal: 'right'
               }}
             >
-              <Avatar alt={user?.full_name} src='/images/avatars/1.png' sx={{ width: '2.5rem', height: '2.5rem' }} />
+              <Avatar alt={user?.fullName} src='/images/avatars/1.png' sx={{ width: '2.5rem', height: '2.5rem' }} />
             </Badge>
             <Box sx={{ display: 'flex', ml: 2.5, alignItems: 'flex-start', flexDirection: 'column' }}>
-              <Typography sx={{ fontWeight: 500 }}>{user?.full_name}</Typography>
+              <Typography sx={{ fontWeight: 500 }}>{user?.fullName}</Typography>
               <Typography variant='body2'>{user?.role}</Typography>
             </Box>
           </Box>

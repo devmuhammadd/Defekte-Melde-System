@@ -197,7 +197,6 @@ const LoginPage = () => {
                   render={({ field: { value, onChange, onBlur } }) => (
                     <CustomTextField
                       fullWidth
-                      autoFocus
                       label='Username'
                       value={value}
                       onBlur={onBlur}
