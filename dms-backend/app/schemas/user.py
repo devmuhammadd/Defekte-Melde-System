@@ -8,6 +8,7 @@ class UserCreate(BaseModel):
     email: EmailStr
     password: str = Field(min_length=4)
     username: constr(min_length=3, max_length=50)
+    full_name: str = None
 
 
 class ShowUser(BaseModel):
@@ -15,6 +16,7 @@ class ShowUser(BaseModel):
     email: EmailStr
     username: constr()
     is_active: bool
+    full_name: str
 
     class Config:  # tells pydantic to convert even non dict obj to json
         orm_mode = True

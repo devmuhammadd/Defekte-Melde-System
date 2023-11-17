@@ -79,6 +79,7 @@ const FormControlLabel = styled(MuiFormControlLabel)(({ theme }) => ({
 const schema = yup.object().shape({
   email: yup.string().email().required(),
   username: yup.string().required(),
+  full_name: yup.string().required(),
   password: yup.string().min(5).required()
 })
 
@@ -106,8 +107,8 @@ const Register = () => {
   })
 
   const onSubmit = data => {
-    const { email, username, password } = data
-    auth.register({ email, username, password }, () => {
+    const { email, username, password, full_name } = data
+    auth.register({ email, username, password, full_name }, () => {
       setError('username', {
         type: 'manual',
         message: 'Unable to create an account with this username!'
@@ -220,6 +221,25 @@ const Register = () => {
                       placeholder='Email'
                       error={Boolean(errors.email)}
                       {...(errors.email && { helperText: errors.email.message })}
+                    />
+                  )}
+                />
+              </Box>
+              <Box sx={{ mb: 4 }}>
+                <Controller
+                  name='full_name'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange, onBlur } }) => (
+                    <CustomTextField
+                      fullWidth
+                      label='Full Name'
+                      value={value}
+                      onBlur={onBlur}
+                      onChange={onChange}
+                      placeholder='Full Name'
+                      error={Boolean(errors.full_name)}
+                      {...(errors.full_name && { helperText: errors.full_name.message })}
                     />
                   )}
                 />

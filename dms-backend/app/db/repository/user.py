@@ -11,6 +11,7 @@ def create_new_user(user: UserCreate, db: Session):
         username=user.username,
         is_active=True,
         is_superuser=False,
+        full_name=user.full_name,
     )
     db.add(user)
     db.commit()
