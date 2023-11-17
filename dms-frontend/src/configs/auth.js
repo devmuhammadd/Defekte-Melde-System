@@ -1,7 +1,7 @@
 export default {
   meEndpoint: '/auth/me',
-  loginEndpoint: '/jwt/login',
-  registerEndpoint: '/jwt/register',
+  loginEndpoint: `${process.env.NEXT_PUBLIC_BACKEND_URL}/token`,
+  registerEndpoint: `${process.env.NEXT_PUBLIC_BACKEND_URL}/users`,
   storageTokenKeyName: 'accessToken',
-  onTokenExpiration: 'refreshToken' // logout | refreshToken
+  onTokenExpiration: 'logout' // logout | refreshToken
 }

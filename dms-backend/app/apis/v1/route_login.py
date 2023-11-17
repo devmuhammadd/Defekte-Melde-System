@@ -5,9 +5,9 @@ from fastapi import status, HTTPException
 
 from app.db.session import get_db
 from app.core.hashing import Hasher
-from app.schemas.token import Token
 from app.db.repository.login import get_user
 from app.core.security import create_access_token
+from app.schemas.user_token import UserToken
 
 router = APIRouter()
 
@@ -20,7 +20,7 @@ def authenticate_user(username: str, password: str,db: Session):
     return user
 
 
-@router.post("/token", response_model=Token)
+@router.post("/token", response_model=UserToken)
 def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = authenticate_user(form_data.username, form_data.password, db)
     if not user:
@@ -31,4 +31,4 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:
     access_token = create_access_token(
         data={"sub": user.email}
     )
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {"token": {"access_token": access_token, "token_type": "bearer"}, "user": user}

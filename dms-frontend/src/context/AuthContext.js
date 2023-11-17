@@ -61,16 +61,33 @@ const AuthProvider = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const handleLogin = (params, errorCallback) => {
+  const handleRegister = (params, errorCallback) => {
     axios
-      .post(authConfig.loginEndpoint, params)
+      .post(authConfig.registerEndpoint, params)
       .then(async response => {
-        params.rememberMe
-          ? window.localStorage.setItem(authConfig.storageTokenKeyName, response.data.accessToken)
-          : null
+        window.localStorage.setItem(authConfig.storageTokenKeyName, response.data.token.access_token)
         const returnUrl = router.query.returnUrl
-        setUser({ ...response.data.userData })
-        params.rememberMe ? window.localStorage.setItem('userData', JSON.stringify(response.data.userData)) : null
+        setUser({ ...response.data.user, role: 'user' })
+        window.localStorage.setItem('userData', JSON.stringify({ ...response.data.user, role: 'user' }))
+        const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
+        router.replace(redirectURL)
+      })
+      .catch(err => {
+        if (errorCallback) errorCallback(err)
+      })
+  }
+
+  const handleLogin = (params, errorCallback) => {
+    const formData = new FormData();
+    formData.append('username', params.username);
+    formData.append('password', params.password);
+    axios
+      .post(authConfig.loginEndpoint, formData)
+      .then(async response => {
+        window.localStorage.setItem(authConfig.storageTokenKeyName, response.data.token.access_token)
+        const returnUrl = router.query.returnUrl
+        setUser({ ...response.data.user, role: 'user' })
+        window.localStorage.setItem('userData', JSON.stringify({ ...response.data.user, role: 'user' }))
         const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
         router.replace(redirectURL)
       })
@@ -91,8 +108,9 @@ const AuthProvider = ({ children }) => {
     loading,
     setUser,
     setLoading,
+    register: handleRegister,
     login: handleLogin,
-    logout: handleLogout
+    logout: handleLogout,
   }
 
   return <AuthContext.Provider value={values}>{children}</AuthContext.Provider>
