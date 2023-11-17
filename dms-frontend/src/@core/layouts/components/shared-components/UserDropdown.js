@@ -126,7 +126,7 @@ const UserDropdown = props => {
           </Box>
         </Box>
         <Divider sx={{ my: theme => `${theme.spacing(2)} !important` }} />
-        <MenuItemStyled sx={{ p: 0 }} onClick={() => handleDropdownClose()}>
+        <MenuItemStyled sx={{ p: 0 }} onClick={() => handleDropdownClose('/settings/account')}>
           <Box sx={styles}>
             <Icon icon='tabler:settings' />
             Settings
