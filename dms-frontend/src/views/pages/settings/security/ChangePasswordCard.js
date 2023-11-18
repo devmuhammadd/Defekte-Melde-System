@@ -23,6 +23,7 @@ import * as yup from 'yup'
 import toast from 'react-hot-toast'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+import axios from 'src/utils/axios'
 
 const defaultValues = {
     newPassword: '',
@@ -31,14 +32,10 @@ const defaultValues = {
 }
 
 const schema = yup.object().shape({
-    currentPassword: yup.string().min(8).required(),
+    currentPassword: yup.string().min(6).required(),
     newPassword: yup
         .string()
-        .min(8)
-        .matches(
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
-            'Must contain 8 characters, 1 uppercase, 1 lowercase, 1 number and 1 special case character'
-        )
+        .min(6)
         .required(),
     confirmNewPassword: yup
         .string()
@@ -74,9 +71,15 @@ const ChangePasswordCard = () => {
         setValues({ ...values, showConfirmNewPassword: !values.showConfirmNewPassword })
     }
 
-    const onPasswordFormSubmit = () => {
-        toast.success('Password Changed Successfully')
-        reset(defaultValues)
+    const onPasswordFormSubmit = (data) => {
+        axios.put('/password', data)
+            .then((res) => {
+                toast.success('Password Changed Successfully!');
+                reset(defaultValues);
+            })
+            .catch((err) => {
+                toast.error(err?.response?.data?.detail);
+            });
     }
 
     return (

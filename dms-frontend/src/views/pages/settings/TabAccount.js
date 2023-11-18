@@ -14,25 +14,42 @@ import CustomTextField from 'src/@core/components/mui/text-field'
 // ** Third Party Imports
 import { useForm, Controller } from 'react-hook-form'
 import { useAuth } from 'src/hooks/useAuth'
+import * as yup from 'yup'
+import toast from 'react-hot-toast'
+import { yupResolver } from '@hookform/resolvers/yup'
+import axios from 'src/utils/axios'
+
+const schema = yup.object().shape({
+    email: yup.string().email().required(),
+    username: yup.string().required(),
+    fullName: yup.string().required(),
+})
 
 const TabAccount = () => {
-    // ** Hooks
-    const { user } = useAuth();
-    const {
-        handleSubmit,
-        formState: { errors }
-    } = useForm({ defaultValues: { checkbox: false } })
+    const { user, setUser } = useAuth();
 
-    const initialData = {
+    const defaultValues = {
         fullName: user?.fullName,
         username: user?.username,
         email: user?.email
     }
-    // ** State
-    const [formData, setFormData] = useState(initialData);
+    // ** Hooks
+    const {
+        handleSubmit,
+        reset,
+        control,
+        formState: { errors }
+    } = useForm({ defaultValues, resolver: yupResolver(schema) })
 
-    const handleFormChange = (field, value) => {
-        setFormData({ ...formData, [field]: value })
+    const onFormSubmit = (data) => {
+        axios.put('/profile', data)
+            .then((res) => {
+                setUser(res?.data);
+                toast.success('Account details updated!');
+            })
+            .catch((err) => {
+                toast.error(err?.data?.detail);
+            });
     }
 
     return (
@@ -41,42 +58,71 @@ const TabAccount = () => {
             <Grid item xs={12}>
                 <Card>
                     <CardHeader title='Profile Details' />
-                    <form>
+                    <form onSubmit={handleSubmit(onFormSubmit)}>
                         <CardContent>
                             <Grid container spacing={5}>
                                 <Grid item xs={12} sm={6}>
-                                    <CustomTextField
-                                        fullWidth
-                                        label='Full Name'
-                                        placeholder='John Doe'
-                                        value={formData.fullName}
-                                        onChange={e => handleFormChange('fullName', e.target.value)}
+                                    <Controller
+                                        name='fullName'
+                                        control={control}
+                                        rules={{ required: true }}
+                                        render={({ field: { value, onChange, onBlur } }) => (
+                                            <CustomTextField
+                                                fullWidth
+                                                label='Full Name'
+                                                value={value}
+                                                onBlur={onBlur}
+                                                onChange={onChange}
+                                                placeholder='Full Name'
+                                                error={Boolean(errors.fullName)}
+                                                {...(errors.fullName && { helperText: errors.fullName.message })}
+                                            />
+                                        )}
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
-                                    <CustomTextField
-                                        fullWidth
-                                        label='Username'
-                                        placeholder='john'
-                                        value={formData.username}
-                                        onChange={e => handleFormChange('username', e.target.value)}
+                                    <Controller
+                                        name='username'
+                                        control={control}
+                                        rules={{ required: true }}
+                                        render={({ field: { value, onChange, onBlur } }) => (
+                                            <CustomTextField
+                                                fullWidth
+                                                label='Username'
+                                                value={value}
+                                                onBlur={onBlur}
+                                                onChange={onChange}
+                                                placeholder='Username'
+                                                error={Boolean(errors.username)}
+                                                {...(errors.username && { helperText: errors.username.message })}
+                                            />
+                                        )}
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
-                                    <CustomTextField
-                                        fullWidth
-                                        type='email'
-                                        label='Email'
-                                        value={formData.email}
-                                        placeholder='john.doe@example.com'
-                                        onChange={e => handleFormChange('email', e.target.value)}
+                                    <Controller
+                                        name='email'
+                                        control={control}
+                                        rules={{ required: true }}
+                                        render={({ field: { value, onChange, onBlur } }) => (
+                                            <CustomTextField
+                                                fullWidth
+                                                label='Email'
+                                                value={value}
+                                                onBlur={onBlur}
+                                                onChange={onChange}
+                                                placeholder='Email'
+                                                error={Boolean(errors.email)}
+                                                {...(errors.email && { helperText: errors.email.message })}
+                                            />
+                                        )}
                                     />
                                 </Grid>
                                 <Grid item xs={12} sx={{ pt: theme => `${theme.spacing(6.5)} !important` }}>
-                                    <Button variant='contained' sx={{ mr: 4 }}>
+                                    <Button variant='contained' type='submit' sx={{ mr: 4 }}>
                                         Save Changes
                                     </Button>
-                                    <Button type='reset' variant='tonal' color='secondary' onClick={() => setFormData(initialData)}>
+                                    <Button type='reset' variant='tonal' color='secondary' onClick={() => reset()}>
                                         Reset
                                     </Button>
                                 </Grid>

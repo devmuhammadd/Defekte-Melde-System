@@ -1,3 +1,4 @@
+from fastapi import Depends, HTTPException, Request, status
 from sqlalchemy.orm import Session
 from app.core.hashing import Hasher
 from app.db.models.user import get_user_by_username
@@ -5,10 +6,25 @@ from datetime import datetime
 from datetime import timedelta
 from typing import Optional
 from app.core.config import settings
-from jose import jwt
+from jose import JWTError, jwt
+from app.db.session import get_db
 
 
-def authenticate_user(username: str, password: str, db: Session):
+def authenticate_user_token(request: Request, db: Session = Depends(get_db)):
+    try:
+        username = decode_access_token(request.headers['Authorization'])
+        user = get_user_by_username(username=username, db=db)
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid access token!",
+            )
+        return user
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Invalid access token!")
+
+
+def authenticate_user_credentials(username: str, password: str, db: Session):
     user = get_user_by_username(username=username, db=db)
     if not user:
         return False
