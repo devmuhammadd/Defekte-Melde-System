@@ -44,7 +44,7 @@ const TabAccount = () => {
     const onFormSubmit = (data) => {
         axios.put('/profile', data)
             .then((res) => {
-                setUser(res?.data);
+                setUser({ ...res?.data, role: 'user' });
                 toast.success('Account details updated!');
             })
             .catch((err) => {
