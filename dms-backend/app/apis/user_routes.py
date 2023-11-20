@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session
 router = APIRouter()
 
 
-@router.post("/users", response_model=UserToken, status_code=status.HTTP_201_CREATED)
+@router.post("/register", response_model=UserToken, status_code=status.HTTP_201_CREATED)
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
     user = create_new_user(user=user, db=db)
     access_token = create_access_token(
@@ -20,7 +20,7 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     return {"token": {"access_token": access_token, "token_type": "bearer"}, "user": user}
 
 
-@router.post("/token", response_model=UserToken)
+@router.post("/login", response_model=UserToken)
 def login_for_access_token(user_data: UserLogin, db: Session = Depends(get_db)):
     user = authenticate_user_credentials(
         user_data.username, user_data.password, db)
@@ -35,7 +35,7 @@ def login_for_access_token(user_data: UserLogin, db: Session = Depends(get_db)):
     return {"token": {"access_token": access_token, "token_type": "bearer"}, "user": user}
 
 
-@router.get("/profile", response_model=ShowUser, status_code=status.HTTP_200_OK)
+@router.get("/me", response_model=ShowUser, status_code=status.HTTP_200_OK)
 def get_current_user(current_user: ShowUser = Depends(authenticate_user_token)):
 
     return current_user

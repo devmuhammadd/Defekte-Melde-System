@@ -1,7 +1,7 @@
 export default {
-  meEndpoint: '/profile',
-  loginEndpoint: '/token',
-  registerEndpoint: '/users',
+  meEndpoint: '/me',
+  loginEndpoint: '/login',
+  registerEndpoint: '/register',
   storageTokenKeyName: 'accessToken',
   onTokenExpiration: 'logout' // logout | refreshToken
 }
