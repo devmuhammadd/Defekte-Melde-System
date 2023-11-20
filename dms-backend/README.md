@@ -1,7 +1,3 @@
-Certainly! Here's a README tailored specifically for the backend portion of your project that includes APIs for tickets and user authentication:
-
----
-
 # Volunteer Fire Brigade Administration Software - Backend
 
 Welcome to the backend portion of the Volunteer Fire Brigade Administration Software! This section of the project focuses on providing APIs for managing tickets and user authentication.

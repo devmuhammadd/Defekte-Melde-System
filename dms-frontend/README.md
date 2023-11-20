@@ -1,7 +1,3 @@
-Of course! Here's an updated README for a Next.js-based frontend project:
-
----
-
 # Volunteer Fire Brigade Administration Software - Frontend (Next.js)
 
 Welcome to the frontend section of the Volunteer Fire Brigade Administration Software! This section of the project focuses on the user interface and interaction, built using Next.js.
