@@ -7,7 +7,7 @@ import CardStatsSquare from 'src/@core/components/card-statistics/card-stats-squ
 const CardStatisticsSquare = ({ data }) => {
     const renderData = data
         ? data.map((item, index) => (
-            <Grid item xs={3} key={index}>
+            <Grid item xs={4} key={index}>
                 <CardStatsSquare {...item} />
             </Grid>
         ))

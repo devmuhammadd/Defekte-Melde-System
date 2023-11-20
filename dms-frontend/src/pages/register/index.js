@@ -31,6 +31,11 @@ import { useSettings } from 'src/@core/hooks/useSettings'
 // ** Demo Imports
 import FooterIllustrationsV2 from 'src/views/pages/auth/FooterIllustrationsV2'
 
+import * as yup from 'yup'
+import { useForm, Controller } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { useAuth } from 'src/hooks/useAuth'
+
 // ** Styled Components
 const RegisterIllustration = styled('img')(({ theme }) => ({
   zIndex: 2,
@@ -71,17 +76,46 @@ const FormControlLabel = styled(MuiFormControlLabel)(({ theme }) => ({
   }
 }))
 
+const schema = yup.object().shape({
+  email: yup.string().email().required(),
+  username: yup.string().required(),
+  fullName: yup.string().required(),
+  password: yup.string().min(5).required()
+})
+
 const Register = () => {
   // ** States
   const [showPassword, setShowPassword] = useState(false)
 
   // ** Hooks
+  const auth = useAuth();
   const theme = useTheme()
   const { settings } = useSettings()
   const hidden = useMediaQuery(theme.breakpoints.down('md'))
 
   // ** Vars
   const { skin } = settings
+
+  const {
+    control,
+    setError,
+    handleSubmit,
+    formState: { errors }
+  } = useForm({
+    mode: 'onBlur',
+    resolver: yupResolver(schema)
+  })
+
+  const onSubmit = data => {
+    const { email, username, password, fullName } = data
+    auth.register({ email, username, password, fullName }, () => {
+      setError('username', {
+        type: 'manual',
+        message: 'Unable to create an account with this username!'
+      })
+    })
+  }
+
   const imageSource = skin === 'bordered' ? 'auth-v2-register-illustration-bordered' : 'auth-v2-register-illustration'
 
   return (
@@ -101,7 +135,7 @@ const Register = () => {
         >
           <RegisterIllustration
             alt='register-illustration'
-            src={`/images/pages/${imageSource}-${theme.palette.mode}.png`}
+            src={`/images/pages/${imageSource}-${theme.palette.mode}.avif`}
           />
           <FooterIllustrationsV2 />
         </Box>
@@ -151,28 +185,98 @@ const Register = () => {
               </Typography>
               <Typography sx={{ color: 'text.secondary' }}>Make your app management easy and fun!</Typography>
             </Box>
-            <form noValidate autoComplete='off' onSubmit={e => e.preventDefault()}>
-              <CustomTextField autoFocus fullWidth sx={{ mb: 4 }} label='Username' placeholder='johndoe' />
-              <CustomTextField fullWidth label='Email' sx={{ mb: 4 }} placeholder='user@email.com' />
-              <CustomTextField
-                fullWidth
-                label='Password'
-                id='auth-login-v2-password'
-                type={showPassword ? 'text' : 'password'}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position='end'>
-                      <IconButton
-                        edge='end'
-                        onMouseDown={e => e.preventDefault()}
-                        onClick={() => setShowPassword(!showPassword)}
-                      >
-                        <Icon fontSize='1.25rem' icon={showPassword ? 'tabler:eye' : 'tabler:eye-off'} />
-                      </IconButton>
-                    </InputAdornment>
-                  )
-                }}
-              />
+            <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
+              <Box sx={{ mb: 4 }}>
+                <Controller
+                  name='username'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange, onBlur } }) => (
+                    <CustomTextField
+                      fullWidth
+                      label='Username'
+                      value={value}
+                      onBlur={onBlur}
+                      onChange={onChange}
+                      placeholder='Username'
+                      error={Boolean(errors.username)}
+                      {...(errors.username && { helperText: errors.username.message })}
+                    />
+                  )}
+                />
+              </Box>
+              <Box sx={{ mb: 4 }}>
+                <Controller
+                  name='email'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange, onBlur } }) => (
+                    <CustomTextField
+                      fullWidth
+                      label='Email'
+                      value={value}
+                      onBlur={onBlur}
+                      onChange={onChange}
+                      placeholder='Email'
+                      error={Boolean(errors.email)}
+                      {...(errors.email && { helperText: errors.email.message })}
+                    />
+                  )}
+                />
+              </Box>
+              <Box sx={{ mb: 4 }}>
+                <Controller
+                  name='fullName'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange, onBlur } }) => (
+                    <CustomTextField
+                      fullWidth
+                      label='Full Name'
+                      value={value}
+                      onBlur={onBlur}
+                      onChange={onChange}
+                      placeholder='Full Name'
+                      error={Boolean(errors.fullName)}
+                      {...(errors.fullName && { helperText: errors.fullName.message })}
+                    />
+                  )}
+                />
+              </Box>
+              <Box sx={{ mb: 1.5 }}>
+                <Controller
+                  name='password'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange, onBlur } }) => (
+                    <CustomTextField
+                      fullWidth
+                      value={value}
+                      onBlur={onBlur}
+                      label='Password'
+                      onChange={onChange}
+                      placeholder='Password'
+                      id='auth-login-v2-password'
+                      error={Boolean(errors.password)}
+                      {...(errors.password && { helperText: errors.password.message })}
+                      type={showPassword ? 'text' : 'password'}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position='end'>
+                            <IconButton
+                              edge='end'
+                              onMouseDown={e => e.preventDefault()}
+                              onClick={() => setShowPassword(!showPassword)}
+                            >
+                              <Icon fontSize='1.25rem' icon={showPassword ? 'tabler:eye' : 'tabler:eye-off'} />
+                            </IconButton>
+                          </InputAdornment>
+                        )
+                      }}
+                    />
+                  )}
+                />
+              </Box>
               <Button fullWidth type='submit' variant='contained' sx={{ my: 6 }}>
                 Sign up
               </Button>

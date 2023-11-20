@@ -129,7 +129,7 @@ const LoginPage = () => {
             margin: theme => theme.spacing(8, 0, 8, 8)
           }}
         >
-          <LoginIllustration alt='login-illustration' src={`/images/pages/${imageSource}-${theme.palette.mode}.png`} />
+          <LoginIllustration alt='login-illustration' src={`/images/pages/${imageSource}-${theme.palette.mode}.avif`} />
           <FooterIllustrationsV2 />
         </Box>
       ) : null}
@@ -177,17 +177,17 @@ const LoginPage = () => {
                 {`Welcome to ${themeConfig.templateName}! 👋🏻`}
               </Typography>
               <Typography sx={{ color: 'text.secondary' }}>
-                Please sign-in to your account and start the adventure
+                Please sign-in to your account and explore the app
               </Typography>
             </Box>
-            <Alert icon={false} sx={{ py: 3, mb: 6, ...bgColors.primaryLight, '& .MuiAlert-message': { p: 0 } }}>
+            {/* <Alert icon={false} sx={{ py: 3, mb: 6, ...bgColors.primaryLight, '& .MuiAlert-message': { p: 0 } }}>
               <Typography variant='body2' sx={{ mb: 2, color: 'primary.main' }}>
                 Admin: <strong>johndoe</strong> / Pass: <strong>admin</strong>
               </Typography>
               <Typography variant='body2' sx={{ color: 'primary.main' }}>
                 Client: <strong>janedoe</strong> / Pass: <strong>client</strong>
               </Typography>
-            </Alert>
+            </Alert> */}
             <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
               <Box sx={{ mb: 4 }}>
                 <Controller
@@ -197,7 +197,6 @@ const LoginPage = () => {
                   render={({ field: { value, onChange, onBlur } }) => (
                     <CustomTextField
                       fullWidth
-                      autoFocus
                       label='Username'
                       value={value}
                       onBlur={onBlur}
@@ -209,7 +208,7 @@ const LoginPage = () => {
                   )}
                 />
               </Box>
-              <Box sx={{ mb: 1.5 }}>
+              <Box sx={{ mb: 4 }}>
                 <Controller
                   name='password'
                   control={control}
@@ -243,7 +242,7 @@ const LoginPage = () => {
                   )}
                 />
               </Box>
-              <Box
+              {/* <Box
                 sx={{
                   mb: 4,
                   display: 'flex',
@@ -255,7 +254,7 @@ const LoginPage = () => {
                 <Typography component={LinkStyled} href='/forgot-password'>
                   Forgot Password?
                 </Typography>
-              </Box>
+              </Box> */}
               <Button fullWidth type='submit' variant='contained' sx={{ mb: 4 }}>
                 Login
               </Button>
