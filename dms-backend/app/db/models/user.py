@@ -1,14 +1,13 @@
 from app.db.base import Base
-from sqlalchemy import Boolean
-from sqlalchemy import Column
-from sqlalchemy import Integer
-from sqlalchemy import String
+from sqlalchemy import Boolean, Column, Integer, String
 from app.core.hashing import Hasher
 from app.schemas.user import PasswordUpdate, UserCreate, UserUpdate, ShowUser
 from sqlalchemy.orm import Session
 
 
 class User(Base):
+    __tablename__ = 'users'
+
     id = Column(Integer, primary_key=True, index=True)
     email = Column(String, nullable=False, unique=True, index=True)
     username = Column(String, nullable=False, unique=True, index=True)
