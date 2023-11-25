@@ -12,7 +12,8 @@ from app.db.session import get_db
 
 def authenticate_user_token(request: Request, db: Session = Depends(get_db)):
     try:
-        username = decode_access_token(request.headers['Authorization'])
+        username = decode_access_token(
+            request.headers.get('Authorization', ''))
         user = get_user_by_username(username=username, db=db)
         if not user:
             raise HTTPException(

@@ -13,13 +13,14 @@ const TicketSlice = createSlice({
     initialState: {
         tickets: [],
         ticketStats: [],
+        loading: false
     },
     reducers: {
         setTickets: (state, { payload }) => {
-            state.tickets = payload.tickets;
+            state.tickets = payload;
         },
         setTicketStats: (state, { payload }) => {
-            state.ticketStats = payload.stats;
+            state.ticketStats = payload;
         },
         addTicket: (state, { payload }) => {
             const updatedTickets = [...state.tickets];
@@ -60,13 +61,13 @@ export const useTicketActions = () => {
 
     const getTickets = async () => {
         await getTicketsApi().then((res) => {
-            dispatch(setTickets(res));
+            dispatch(setTickets(res?.data));
         });
     };
 
     const getTicketStats = async () => {
         await getTicketStatsApi().then((res) => {
-            dispatch(setTicketStats(res));
+            dispatch(setTicketStats(res?.data));
         });
     };
 
@@ -80,7 +81,7 @@ export const useTicketActions = () => {
     const createTicket = async (params) => {
         dispatch(loadingStart());
         await createTicketApi(params).then((res) => {
-            dispatch(addTicket(res));
+            dispatch(addTicket(res?.data));
             getTicketStats();
         });
         dispatch(loadingCompleted());
@@ -89,7 +90,7 @@ export const useTicketActions = () => {
     const updateTicket = async (params) => {
         dispatch(loadingStart());
         await updateTicketApi(params).then((res) => {
-            dispatch(updateTicketParams(res));
+            dispatch(updateTicketParams(res?.data));
             getTicketStats();
         });
         dispatch(loadingCompleted());

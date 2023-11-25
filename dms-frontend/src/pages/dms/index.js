@@ -5,8 +5,16 @@ import Typography from '@mui/material/Typography'
 import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 import CardStatisticsSquare from 'src/views/pages/dms/CardStatisticsSquare'
+import { useTicket } from 'src/hooks'
+import { useEffect } from 'react'
 
 const Home = () => {
+  const { tickets, ticketStats, loading, loadDmsData } = useTicket();
+
+  useEffect(() => {
+    loadDmsData();
+  }, []);
+
   const stats = [
     {
       stats: '19',
