@@ -4,7 +4,7 @@ from app.schemas.user import ShowUser
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.db.models.ticket import Ticket, get_unique_status_counts
-from app.schemas.ticket import TicketCreate, TicketUpdate, ShowTicket, TicketStats
+from app.schemas.ticket import TicketCreate, TicketUpdate, ShowTicket
 from app.db.session import get_db
 
 router = APIRouter(prefix="/tickets")
@@ -16,7 +16,7 @@ def get_all_tickets(current_user: ShowUser = Depends(authenticate_user_token), d
     return [ticket.to_dict() for ticket in tickets]
 
 
-@router.get("/stats", response_model=List[TicketStats], status_code=status.HTTP_200_OK)
+@router.get("/stats", status_code=status.HTTP_200_OK)
 def get_ticket_stats(current_user: ShowUser = Depends(authenticate_user_token), db: Session = Depends(get_db)):
     stats = get_unique_status_counts(db)
     return stats

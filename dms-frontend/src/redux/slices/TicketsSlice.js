@@ -12,7 +12,7 @@ const TicketSlice = createSlice({
     name: 'ticketSlice',
     initialState: {
         tickets: [],
-        ticketStats: [],
+        ticketStats: {},
         loading: false
     },
     reducers: {

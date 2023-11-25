@@ -1,12 +1,13 @@
 // ** MUI Imports
-import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
-import CardHeader from '@mui/material/CardHeader'
-import CardContent from '@mui/material/CardContent'
 import CardStatisticsSquare from 'src/views/pages/dms/CardStatisticsSquare'
 import { useTicket } from 'src/hooks'
 import { useEffect } from 'react'
+import { Box, Button, CircularProgress } from '@mui/material'
+import Tickets from 'src/views/pages/dms/Tickets'
+import { calculateTicketStats } from 'src/utils/ticketUtils'
+import Icon from 'src/@core/components/icon'
 
 const Home = () => {
   const { tickets, ticketStats, loading, loadDmsData } = useTicket();
@@ -15,56 +16,31 @@ const Home = () => {
     loadDmsData();
   }, []);
 
-  const stats = [
-    {
-      stats: '19',
-      title: 'Opened Tickets',
-      avatarColor: 'primary',
-      icon: 'ph:ticket'
-    },
-    {
-      stats: '12',
-      title: 'In-progress Tickets',
-      avatarColor: 'error',
-      icon: 'lets-icons:time-progress-fill'
-    },
-    {
-      stats: '65',
-      title: 'Completed Tickets',
-      avatarColor: 'success',
-      icon: 'carbon:task-complete'
-    }
-  ];
+  if (loading) {
+    return (
+      <Grid item xs={12}>
+        <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column', justifyContent: 'center' }}>
+          <CircularProgress sx={{ my: 4 }} />
+          <Typography>Loading...</Typography>
+        </Box>
+      </Grid>
+    )
+  }
 
   return (
     <Grid container spacing={6}>
       <Grid item xs={12}>
-        <CardStatisticsSquare data={stats} />
+        <CardStatisticsSquare data={calculateTicketStats(ticketStats)} />
+      </Grid>
+      <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <Button variant='contained' color='success' endIcon={<Icon icon='ic:baseline-plus' />}>
+          New Ticket
+        </Button>
       </Grid>
       <Grid item xs={12}>
-        <Card>
-          <CardHeader title='Kick start your project 🚀'></CardHeader>
-          <CardContent>
-            <Typography sx={{ mb: 2 }}>All the best for your new project.</Typography>
-            <Typography>
-              Please make sure to read our Template Documentation to understand where to go from here and how to use our
-              template.
-            </Typography>
-          </CardContent>
-        </Card>
+        <Tickets tickets={tickets} />
       </Grid>
-      <Grid item xs={12}>
-        <Card>
-          <CardHeader title='ACL and JWT 🔒'></CardHeader>
-          <CardContent>
-            <Typography sx={{ mb: 2 }}>
-              Access Control (ACL) and Authentication (JWT) are the two main security features of our template and are implemented in the starter-kit as well.
-            </Typography>
-            <Typography>Please read our Authentication and ACL Documentations to get more out of them.</Typography>
-          </CardContent>
-        </Card>
-      </Grid>
-    </Grid>
+    </Grid >
   )
 }
 

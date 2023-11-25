@@ -64,11 +64,11 @@ def get_unique_status_counts(db: Session):
             .all()
         )
 
-        result = [
-            {'status': status, 'count': count}
-            for status, count in status_counts
-        ]
+        results = {}
 
-        return result
+        for status, count in status_counts:
+            results[status] = count
+
+        return results
     finally:
         db.close()

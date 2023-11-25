@@ -33,11 +33,3 @@ class ShowTicket(BaseModel):
 
     class Config:
         from_attributes = True
-
-
-class TicketStats(BaseModel):
-    status: str
-    count: int
-
-    class Config:
-        from_attributes = True
