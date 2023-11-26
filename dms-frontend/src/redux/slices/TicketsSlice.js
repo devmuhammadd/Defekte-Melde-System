@@ -82,7 +82,6 @@ export const useTicketActions = () => {
         dispatch(loadingStart());
         await createTicketApi(params).then((res) => {
             dispatch(addTicket(res?.data));
-            getTicketStats();
         });
         dispatch(loadingCompleted());
     };
@@ -91,7 +90,6 @@ export const useTicketActions = () => {
         dispatch(loadingStart());
         await updateTicketApi(params).then((res) => {
             dispatch(updateTicketParams(res?.data));
-            getTicketStats();
         });
         dispatch(loadingCompleted());
     };

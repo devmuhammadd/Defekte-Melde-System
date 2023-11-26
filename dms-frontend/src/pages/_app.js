@@ -34,6 +34,8 @@ import Spinner from 'src/@core/components/spinner'
 import { AuthProvider } from 'src/context/AuthContext'
 import { Provider as ReduxProvider } from 'react-redux'
 import store from 'src/redux/store'
+import { persistStore } from 'redux-persist';
+import { PersistGate } from 'redux-persist/integration/react';
 import { SettingsConsumer, SettingsProvider } from 'src/@core/context/settingsContext'
 
 // ** Styled Components
@@ -56,6 +58,8 @@ import 'src/iconify-bundle/icons-bundle-react'
 import '../../styles/globals.css'
 
 const clientSideEmotionCache = createEmotionCache()
+
+const persistor = persistStore(store);
 
 // ** Pace Loader
 if (themeConfig.routingLoader) {
@@ -109,24 +113,26 @@ const App = props => {
 
       <AuthProvider>
         <ReduxProvider store={store}>
-          <SettingsProvider {...(setConfig ? { pageSettings: setConfig() } : {})}>
-            <SettingsConsumer>
-              {({ settings }) => {
-                return (
-                  <ThemeComponent settings={settings}>
-                    <Guard authGuard={authGuard} guestGuard={guestGuard}>
-                      <AclGuard aclAbilities={aclAbilities} guestGuard={guestGuard} authGuard={authGuard}>
-                        {getLayout(<Component {...pageProps} />)}
-                      </AclGuard>
-                    </Guard>
-                    <ReactHotToast>
-                      <Toaster position={settings.toastPosition} toastOptions={{ className: 'react-hot-toast' }} />
-                    </ReactHotToast>
-                  </ThemeComponent>
-                )
-              }}
-            </SettingsConsumer>
-          </SettingsProvider>
+          <PersistGate persistor={persistor}>
+            <SettingsProvider {...(setConfig ? { pageSettings: setConfig() } : {})}>
+              <SettingsConsumer>
+                {({ settings }) => {
+                  return (
+                    <ThemeComponent settings={settings}>
+                      <Guard authGuard={authGuard} guestGuard={guestGuard}>
+                        <AclGuard aclAbilities={aclAbilities} guestGuard={guestGuard} authGuard={authGuard}>
+                          {getLayout(<Component {...pageProps} />)}
+                        </AclGuard>
+                      </Guard>
+                      <ReactHotToast>
+                        <Toaster position={settings.toastPosition} toastOptions={{ className: 'react-hot-toast' }} />
+                      </ReactHotToast>
+                    </ThemeComponent>
+                  )
+                }}
+              </SettingsConsumer>
+            </SettingsProvider>
+          </PersistGate>
         </ReduxProvider>
       </AuthProvider>
     </CacheProvider>

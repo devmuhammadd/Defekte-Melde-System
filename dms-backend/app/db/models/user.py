@@ -16,6 +16,12 @@ class User(Base):
     is_active = Column(Boolean, default=True)
     full_name = Column(String, nullable=False)
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.full_name
+        }
+
 
 def create_new_user(user: UserCreate, db: Session):
     user = User(

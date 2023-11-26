@@ -27,9 +27,13 @@ class ShowTicket(BaseModel):
     description: str
     status: str
     urgency: str
+    contact: str
     location: str
+    location_area: str
+    location_area_id: int
     user: str
     reporter: str
+    reporter_id: int
 
     class Config:
         from_attributes = True

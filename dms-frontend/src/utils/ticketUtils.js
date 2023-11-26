@@ -14,7 +14,7 @@ export const urgencyColorSelector = {
     'Low': 'info',
     'Medium': 'secondary',
     'High': 'warning',
-    'Critical': 'danger'
+    'Critical': 'error'
 }
 
 export const calculateTicketStats = (stats) => {

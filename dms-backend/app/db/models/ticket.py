@@ -28,7 +28,7 @@ class Ticket(Base):
                             reporter_id], backref="reported_tickets")
 
     def to_dict(self):
-        location = self.get_location()
+        location_area = self.get_location()
         return {
             'id': self.id,
             'title': self.title,
@@ -36,9 +36,12 @@ class Ticket(Base):
             'status': self.status,
             'urgency': self.urgency,
             'contact': self.contact,
-            'location': location,
+            'location': self.location,
+            'location_area': location_area.name,
+            'location_area_id': location_area.id,
             'user': self.user.full_name if self.user else None,
-            'reporter': self.reporter.full_name if self.reporter else None
+            'reporter': self.reporter.full_name if self.reporter else None,
+            'reporter_id': self.reporter.id if self.reporter else None
         }
 
     def get_location(self):
@@ -46,13 +49,13 @@ class Ticket(Base):
 
         if self.location == 'Vehicle':
             vehicle = db.query(Vehicle).filter_by(id=self.location_id).first()
-            return f"Vehicle ({vehicle.name})" if vehicle else None
+            return vehicle if vehicle else None
         elif self.location == 'Room':
             room = db.query(Room).filter_by(id=self.location_id).first()
-            return f"Room ({room.name})" if room else None
+            return room if room else None
         elif self.location == 'Station':
             station = db.query(Station).filter_by(id=self.location_id).first()
-            return f"Station ({station.name})" if station else None
+            return station if station else None
         return None
 
 

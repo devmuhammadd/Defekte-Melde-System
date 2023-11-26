@@ -5,4 +5,5 @@ export const getTicketsApi = () => axios.get(ApiRoutes.TicketsUrl).then(res => r
 export const getTicketStatsApi = () => axios.get(ApiRoutes.TicketStatsUrl).then(res => res);
 export const createTicketApi = (params) => axios.post(ApiRoutes.TicketsUrl, params).then(res => res);
 export const updateTicketApi = (params) => axios.put(ApiRoutes.TicketUrl(params.id), params).then(res => res);
-export const deleteTicketApi = (params) => axios.delete(ApiRoutes.TicketUrl(params.id), params).then(res => res);
+export const deleteTicketApi = (id) => axios.delete(ApiRoutes.TicketUrl(id)).then(res => res);
+export const getNewTicketData = () => axios.get(ApiRoutes.NewTicketData).then(res => res);

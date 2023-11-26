@@ -15,9 +15,28 @@ import OptionsMenu from 'src/@core/components/option-menu'
 
 import { statusBarCalculator, statusColorSelector, urgencyColorSelector } from 'src/utils/ticketUtils';
 import { useTicket } from 'src/hooks'
+import { useRouter } from 'next/router'
+import toast from 'react-hot-toast'
 
 const Tickets = ({ tickets }) => {
     const { deleteTicket } = useTicket();
+    const router = useRouter();
+
+    const handleDelete = async (ticket) => {
+        const response = confirm(`Are you sure you want to delete the ${ticket?.title} ticket?`)
+        if (response) {
+            try {
+                await deleteTicket(ticket?.id);
+                toast.success("Ticket deleted successfully!");
+            } catch (err) {
+                toast.error("Unable to delete a ticket!");
+            }
+        }
+    }
+
+    const handleEditTicket = (ticketId) => {
+        router.push(`/dms?ticketId=${ticketId}`);
+    }
 
     return (
         <Grid container spacing={6}>
@@ -46,9 +65,9 @@ const Tickets = ({ tickets }) => {
                                         <OptionsMenu
                                             iconButtonProps={{ size: 'small', sx: { color: 'text.disabled' } }}
                                             options={[
-                                                'Edit Ticket',
+                                                { text: 'Edit Ticket', menuItemProps: { onClick: () => handleEditTicket(ticket?.id) } },
                                                 { divider: true, dividerProps: { sx: { my: theme => `${theme.spacing(2)} !important` } } },
-                                                { text: 'Delete Ticket', menuItemProps: { sx: { color: 'error.main' }, onClick: () => { deleteTicket(ticket?.id) } } }
+                                                { text: 'Delete Ticket', menuItemProps: { sx: { color: 'error.main' }, onClick: () => handleDelete(ticket) } }
                                             ]}
                                         />
                                     }
@@ -79,7 +98,7 @@ const Tickets = ({ tickets }) => {
                                                     rounded
                                                     size='small'
                                                     skin='light'
-                                                    label={ticket?.location}
+                                                    label={`${ticket?.location} (${ticket?.locationArea})`}
                                                     sx={{ cursor: 'pointer' }}
                                                 />
                                             </Box>
@@ -113,10 +132,44 @@ const Tickets = ({ tickets }) => {
                                         <LinearProgress
                                             color='primary'
                                             variant='determinate'
-                                            sx={{ mb: 3, height: 10, cursor: 'pointer' }}
+                                            sx={{ mb: 6, height: 10, cursor: 'pointer' }}
                                             value={statusBarCalculator[ticket?.status]}
                                         />
                                     </Tooltip>
+                                    <Box
+                                        sx={{
+                                            gap: 2,
+                                            display: 'flex',
+                                            flexWrap: 'wrap',
+                                            alignItems: 'center',
+                                            justifyContent: 'space-between'
+                                        }}
+                                    >
+                                        <CustomChip
+                                            rounded
+                                            size='small'
+                                            skin='light'
+                                            sx={{ height: 60 }}
+                                            label={
+                                                <>
+                                                    <Typography sx={{ fontWeight: 500 }}>Contact</Typography>
+                                                    <Typography sx={{ color: 'text.secondary' }}>{ticket?.contact}</Typography>
+                                                </>
+                                            }
+                                        />
+                                        <CustomChip
+                                            rounded
+                                            size='small'
+                                            skin='light'
+                                            sx={{ height: 60 }}
+                                            label={
+                                                <>
+                                                    <Typography sx={{ fontWeight: 500 }}>Creator</Typography>
+                                                    <Typography sx={{ color: 'text.secondary' }}>{ticket?.user}</Typography>
+                                                </>
+                                            }
+                                        />
+                                    </Box>
                                 </CardContent>
                             </Card>
                         </Grid>

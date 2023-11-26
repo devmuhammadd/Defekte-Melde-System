@@ -4,6 +4,10 @@ from app.schemas.user import ShowUser
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.db.models.ticket import Ticket, get_unique_status_counts
+from app.db.models.user import User
+from app.db.models.vehicle import Vehicle
+from app.db.models.station import Station
+from app.db.models.room import Room
 from app.schemas.ticket import TicketCreate, TicketUpdate, ShowTicket
 from app.db.session import get_db
 
@@ -20,6 +24,16 @@ def get_all_tickets(current_user: ShowUser = Depends(authenticate_user_token), d
 def get_ticket_stats(current_user: ShowUser = Depends(authenticate_user_token), db: Session = Depends(get_db)):
     stats = get_unique_status_counts(db)
     return stats
+
+
+@router.get("/new", status_code=status.HTTP_200_OK)
+def get_new_ticket_data(db: Session = Depends(get_db)):
+    reporters = [user.to_dict() for user in db.query(User).all()]
+    vehicles = [vehicle.to_dict() for vehicle in db.query(Vehicle).all()]
+    stations = [station.to_dict() for station in db.query(Station).all()]
+    rooms = [room.to_dict() for room in db.query(Room).all()]
+
+    return {'reporters': reporters, 'rooms': rooms, 'vehicles': vehicles, 'stations': stations}
 
 
 @router.get("/{ticket_id}", response_model=ShowTicket, status_code=status.HTTP_200_OK)
