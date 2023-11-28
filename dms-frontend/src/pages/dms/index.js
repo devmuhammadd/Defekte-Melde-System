@@ -1,63 +1,37 @@
-// ** MUI Imports
-import Card from '@mui/material/Card'
-import Grid from '@mui/material/Grid'
-import Typography from '@mui/material/Typography'
-import CardHeader from '@mui/material/CardHeader'
-import CardContent from '@mui/material/CardContent'
-import CardStatisticsSquare from 'src/views/pages/dms/CardStatisticsSquare'
+import { useRouter } from 'next/router';
+import Dashboard from 'src/views/pages/dms/Dashboard';
+import EditTicket from 'src/views/pages/dms/EditTicket';
+import NewTicket from 'src/views/pages/dms/NewTicket';
 
-const Home = () => {
-  const stats = [
-    {
-      stats: '19',
-      title: 'Opened Tickets',
-      avatarColor: 'primary',
-      icon: 'ph:ticket'
-    },
-    {
-      stats: '12',
-      title: 'In-progress Tickets',
-      avatarColor: 'error',
-      icon: 'lets-icons:time-progress-fill'
-    },
-    {
-      stats: '65',
-      title: 'Completed Tickets',
-      avatarColor: 'success',
-      icon: 'carbon:task-complete'
+const Home = ({ hasQueryParams }) => {
+  const router = useRouter();
+  const { newTicket, ticketId } = router?.query;
+
+  const renderComponent = () => {
+    if (hasQueryParams) {
+      if (newTicket) {
+        return <NewTicket />;
+      } else if (ticketId) {
+        return <EditTicket ticketId={ticketId} />;
+      }
+    } else {
+      return <Dashboard />;
     }
-  ];
+  };
 
-  return (
-    <Grid container spacing={6}>
-      <Grid item xs={12}>
-        <CardStatisticsSquare data={stats} />
-      </Grid>
-      <Grid item xs={12}>
-        <Card>
-          <CardHeader title='Kick start your project 🚀'></CardHeader>
-          <CardContent>
-            <Typography sx={{ mb: 2 }}>All the best for your new project.</Typography>
-            <Typography>
-              Please make sure to read our Template Documentation to understand where to go from here and how to use our
-              template.
-            </Typography>
-          </CardContent>
-        </Card>
-      </Grid>
-      <Grid item xs={12}>
-        <Card>
-          <CardHeader title='ACL and JWT 🔒'></CardHeader>
-          <CardContent>
-            <Typography sx={{ mb: 2 }}>
-              Access Control (ACL) and Authentication (JWT) are the two main security features of our template and are implemented in the starter-kit as well.
-            </Typography>
-            <Typography>Please read our Authentication and ACL Documentations to get more out of them.</Typography>
-          </CardContent>
-        </Card>
-      </Grid>
-    </Grid>
-  )
+  return <>{renderComponent()}</>;
+};
+
+export async function getServerSideProps(context) {
+  const { query } = context;
+
+  const hasQueryParams = Object.keys(query).length > 0;
+
+  return {
+    props: {
+      hasQueryParams,
+    },
+  };
 }
 
-export default Home
+export default Home;

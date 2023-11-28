@@ -24,8 +24,8 @@ class ShowUser(BaseModel):
     is_active: bool
     full_name: str
 
-    class Config:  # tells pydantic to convert even non dict obj to json
-        orm_mode = True
+    class Config:
+        from_attributes = True
 
 
 class UserLogin(BaseModel):
