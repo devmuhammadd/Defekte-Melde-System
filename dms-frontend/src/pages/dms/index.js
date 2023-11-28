@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import Dashboard from 'src/views/pages/dms/Dashboard';
 import EditTicket from 'src/views/pages/dms/EditTicket';
-import NewTicket from 'src/views/pages/dms/TicketForm';
+import NewTicket from 'src/views/pages/dms/NewTicket';
 
 const Home = ({ hasQueryParams }) => {
   const router = useRouter();

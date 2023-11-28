@@ -24,7 +24,7 @@ function EditTicket({ ticketId }) {
 
     return (
         <TicketForm
-            title={'Edit a Ticket'}
+            title="Edit a Ticket"
             onFormSubmit={updateTicket}
             ticket={ticket}
             successMessage="Ticket updated successfully!"

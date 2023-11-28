@@ -6,7 +6,7 @@ function NewTicket() {
 
     return (
         <TicketForm
-            title={'Add a Ticket'}
+            title="Add a Ticket"
             onFormSubmit={createTicket}
             successMessage="Ticket added successfully!"
         />

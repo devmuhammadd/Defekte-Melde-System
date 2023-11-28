@@ -101,6 +101,7 @@ const TicketForm = ({ title, onFormSubmit, ticket, successMessage }) => {
                                 render={({ field: { value, onChange, onBlur } }) => (
                                     <CustomTextField
                                         fullWidth
+                                        autoComplete="off"
                                         label='Title'
                                         value={value}
                                         onBlur={onBlur}
@@ -119,6 +120,7 @@ const TicketForm = ({ title, onFormSubmit, ticket, successMessage }) => {
                                 render={({ field: { value, onChange, onBlur } }) => (
                                     <CustomTextField
                                         fullWidth
+                                        autoComplete="off"
                                         label='Description'
                                         value={value}
                                         onBlur={onBlur}
@@ -137,6 +139,7 @@ const TicketForm = ({ title, onFormSubmit, ticket, successMessage }) => {
                                 render={({ field: { value, onChange, onBlur } }) => (
                                     <CustomTextField
                                         fullWidth
+                                        autoComplete="off"
                                         label='Contact'
                                         value={value}
                                         onBlur={onBlur}
