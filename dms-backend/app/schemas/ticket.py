@@ -32,6 +32,7 @@ class ShowTicket(BaseModel):
     location_area: str
     location_area_id: int
     user: str
+    user_id: int
     reporter: str
     reporter_id: int
 
