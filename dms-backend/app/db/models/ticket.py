@@ -40,6 +40,7 @@ class Ticket(Base):
             'location_area': location_area.name,
             'location_area_id': location_area.id,
             'user': self.user.full_name if self.user else None,
+            'user_id': self.user.id if self.user else None,
             'reporter': self.reporter.full_name if self.reporter else None,
             'reporter_id': self.reporter.id if self.reporter else None
         }

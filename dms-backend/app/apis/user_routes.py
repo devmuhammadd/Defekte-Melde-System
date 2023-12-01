@@ -15,7 +15,7 @@ router = APIRouter()
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
     user = create_new_user(user=user, db=db)
     access_token = create_access_token(
-        data={"sub": user.email}
+        data={"sub": user.username}
     )
     return {"token": {"access_token": access_token, "token_type": "bearer"}, "user": user}
 

@@ -16,7 +16,7 @@ router = APIRouter(prefix="/tickets")
 
 @router.get("/", response_model=List[ShowTicket], status_code=status.HTTP_200_OK)
 def get_all_tickets(current_user: ShowUser = Depends(authenticate_user_token), db: Session = Depends(get_db)):
-    tickets = db.query(Ticket).all()
+    tickets = db.query(Ticket).order_by(Ticket.id).all()
     return [ticket.to_dict() for ticket in tickets]
 
 

@@ -72,8 +72,12 @@ const TicketForm = ({ title, onFormSubmit, ticket, successMessage }) => {
     const onSubmit = async data => {
         try {
             const params = data;
-            params['userId'] = user?.id;
-            if (ticket) params['id'] = ticket?.id;
+            if (ticket) {
+                params['id'] = ticket?.id;
+                params['userId'] = ticket?.userId;
+            } else {
+                params['userId'] = user?.id;
+            }
             await onFormSubmit(params);
             router.push('/dms');
             toast.success(successMessage);
