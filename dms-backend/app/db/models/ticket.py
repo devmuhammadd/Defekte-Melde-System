@@ -21,11 +21,13 @@ class Ticket(Base):
     location_id = Column(Integer, nullable=False)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     reporter_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    station_id = Column(Integer, ForeignKey('stations.id'), nullable=False)
 
     user = relationship("User", foreign_keys=[
                         user_id], backref="created_tickets")
     reporter = relationship("User", foreign_keys=[
                             reporter_id], backref="reported_tickets")
+    station = relationship("Station", foreign_keys=[station_id])
 
     def to_dict(self):
         location_area = self.get_location()
@@ -36,9 +38,11 @@ class Ticket(Base):
             'status': self.status,
             'urgency': self.urgency,
             'contact': self.contact,
+            'station': self.station.name if self.station else None,
+            'station_id': self.station.id if self.station else None,
             'location': self.location,
             'location_area': location_area.name,
-            'location_area_id': location_area.id,
+            'location_id': location_area.id,
             'user': self.user.full_name if self.user else None,
             'user_id': self.user.id if self.user else None,
             'reporter': self.reporter.full_name if self.reporter else None,
@@ -54,9 +58,6 @@ class Ticket(Base):
         elif self.location == 'Room':
             room = db.query(Room).filter_by(id=self.location_id).first()
             return room if room else None
-        elif self.location == 'Station':
-            station = db.query(Station).filter_by(id=self.location_id).first()
-            return station if station else None
         return None
 
 

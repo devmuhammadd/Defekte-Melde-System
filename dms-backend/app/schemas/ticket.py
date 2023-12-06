@@ -11,6 +11,7 @@ class TicketBase(BaseModel):
     location_id: int
     user_id: int
     reporter_id: int
+    station_id: int
 
 
 class TicketCreate(TicketBase):
@@ -28,9 +29,11 @@ class ShowTicket(BaseModel):
     status: str
     urgency: str
     contact: str
+    station: str
+    station_id: int
     location: str
     location_area: str
-    location_area_id: int
+    location_id: int
     user: str
     user_id: int
     reporter: str

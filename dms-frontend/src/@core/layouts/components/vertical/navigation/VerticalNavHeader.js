@@ -134,7 +134,6 @@ const VerticalNavHeader = props => {
             }
           }}
         >
-          {navCollapsed ? MenuUnlockedIcon() : MenuLockedIcon()}
         </IconButton>
       )}
     </MenuHeaderWrapper>

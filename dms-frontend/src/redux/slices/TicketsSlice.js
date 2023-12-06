@@ -103,7 +103,16 @@ export const useTicketActions = () => {
         dispatch(loadingCompleted());
     };
 
-    return { loadDmsData, createTicket, updateTicket, deleteTicket };
+    const completeTicket = async (params) => {
+        dispatch(loadingStart());
+        await updateTicketApi(params).then((res) => {
+            dispatch(updateTicketParams(res?.data));
+            getTicketStats();
+        });
+        dispatch(loadingCompleted());
+    };
+
+    return { loadDmsData, createTicket, updateTicket, deleteTicket, completeTicket };
 };
 
 export default TicketSlice;

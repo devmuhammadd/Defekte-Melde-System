@@ -3,5 +3,6 @@ export default {
     TicketsUrl: '/tickets',
     TicketStatsUrl: '/tickets/stats',
     TicketUrl: id => `/tickets/${id}`,
-    NewTicketData: '/tickets/new'
+    NewTicketDataUrl: '/tickets/new',
+    StationDataUrl: id => `/stations/${id}`,
 };
