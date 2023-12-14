@@ -27,21 +27,12 @@ def get_ticket_stats(current_user: ShowUser = Depends(authenticate_user_token), 
 
 
 @router.get("/new", status_code=status.HTTP_200_OK)
-def get_new_ticket_data(db: Session = Depends(get_db)):
-    reporters = [user.to_dict() for user in db.query(User).all()]
-    vehicles = [vehicle.to_dict() for vehicle in db.query(Vehicle).all()]
+def get_new_ticket_data(current_user: ShowUser = Depends(authenticate_user_token), db: Session = Depends(get_db)):
+    reporters = [user.to_dict() for user in db.query(
+        User).all() if user.id != current_user.id]
     stations = [station.to_dict() for station in db.query(Station).all()]
-    rooms = [room.to_dict() for room in db.query(Room).all()]
 
-    return {'reporters': reporters, 'rooms': rooms, 'vehicles': vehicles, 'stations': stations}
-
-
-@router.get("/{ticket_id}", response_model=ShowTicket, status_code=status.HTTP_200_OK)
-def read_ticket(ticket_id: int, current_user: ShowUser = Depends(authenticate_user_token), db: Session = Depends(get_db)):
-    ticket = db.query(Ticket).filter(Ticket.id == ticket_id).first()
-    if not ticket:
-        raise HTTPException(status_code=404, detail="Ticket not found")
-    return ticket.to_dict()
+    return {'reporters': reporters, 'stations': stations}
 
 
 @router.post("/", response_model=ShowTicket, status_code=status.HTTP_201_CREATED)

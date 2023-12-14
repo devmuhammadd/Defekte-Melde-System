@@ -1,8 +1,8 @@
+import random
 from app.db.session import get_db
 from app.db.models.room import Room
 from app.db.models.station import Station
 from app.db.models.vehicle import Vehicle
-
 
 sample_data = {
     'stations': [
@@ -18,21 +18,33 @@ sample_data = {
 }
 
 
-def populate_data(db):
+def create_sample_stations(db):
+    for name in sample_data['stations']:
+        record = Station(name=name)
+        db.add(record)
+        print(f"Added {name} to stations!")
+    db.commit()
+
+
+def create_sample_vehicles_and_rooms(db):
+    station_ids = [station.id for station in db.query(Station).all()]
     for key in sample_data.keys():
         for name in sample_data[key]:
-            print(f"Adding {name} to {key}!")
-            if key == 'stations':
-                record = Station(name=name)
-            elif key == 'rooms':
-                record = Room(name=name)
+            if key == 'rooms':
+                station_id = random.choice(station_ids)
+                record = Room(name=name, station_id=station_id)
             elif key == 'vehicles':
-                record = Vehicle(name=name)
+                station_id = random.choice(station_ids)
+                record = Vehicle(name=name, station_id=station_id)
+            else:
+                continue
+            print(f"Adding {name} to {key}!")
             db.add(record)
     db.commit()
 
 
 if __name__ == "__main__":
     db = next(get_db())
-    populate_data(db)
+    create_sample_stations(db)
+    create_sample_vehicles_and_rooms(db)
     db.close()

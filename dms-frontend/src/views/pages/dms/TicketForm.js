@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 
 // ** MUI Imports
+import { Radio, RadioGroup, FormControlLabel, Typography } from '@mui/material';
 import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
@@ -13,7 +14,7 @@ import CardActions from '@mui/material/CardActions'
 
 // ** Custom Component Import
 import CustomTextField from 'src/@core/components/mui/text-field'
-import { getNewTicketData } from 'src/repository/TicketsRepository'
+import { getNewTicketData, getStationData } from 'src/repository/TicketsRepository'
 import * as yup from 'yup'
 import { Controller, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -25,9 +26,9 @@ const schema = yup.object().shape({
     title: yup.string().required(),
     description: yup.string().required(),
     contact: yup.string().required(),
-    status: yup.string().required(),
     urgency: yup.string().required(),
     reporterId: yup.string().required(),
+    stationId: yup.string().required(),
     location: yup.string().required(),
     locationId: yup.string().required()
 });
@@ -37,11 +38,9 @@ const TicketForm = ({ title, onFormSubmit, ticket, successMessage }) => {
     // ** States
     const [data, setData] = useState([]);
     const { user } = useAuth();
-    const [selectedLocation, setSelectedLocation] = useState(ticket?.location || '');
-
-    const handleLocationChange = (value) => {
-        setSelectedLocation(value);
-    };
+    const [selectedLocation, setSelectedLocation] = useState(ticket?.location || 'Room');
+    const [stationData, setStationData] = useState('');
+    const [selectedStation, setSelectedStation] = useState(ticket?.stationId || '');
 
     useEffect(() => {
         getNewTicketData()
@@ -49,6 +48,20 @@ const TicketForm = ({ title, onFormSubmit, ticket, successMessage }) => {
                 setData(res?.data);
             })
     }, []);
+
+    useEffect(() => {
+        if (ticket) {
+            handleStationChange(ticket?.stationId);
+        }
+    }, [])
+
+    const handleStationChange = (id) => {
+        setSelectedStation(id);
+        getStationData(id)
+            .then((res) => {
+                setStationData(res?.data);
+            })
+    }
 
     const {
         control,
@@ -61,11 +74,11 @@ const TicketForm = ({ title, onFormSubmit, ticket, successMessage }) => {
             title: ticket?.title || '',
             description: ticket?.description || '',
             contact: ticket?.contact || '',
-            status: ticket?.status || '',
             urgency: ticket?.urgency || '',
             reporterId: ticket?.reporterId || '',
-            location: ticket?.location || '',
-            locationId: ticket?.locationAreaId || '',
+            stationId: ticket?.stationId || '',
+            location: ticket?.location || 'Room',
+            locationId: ticket?.locationId || '',
         }
     })
 
@@ -75,8 +88,10 @@ const TicketForm = ({ title, onFormSubmit, ticket, successMessage }) => {
             if (ticket) {
                 params['id'] = ticket?.id;
                 params['userId'] = ticket?.userId;
+                params['status'] = ticket?.status;
             } else {
                 params['userId'] = user?.id;
+                params['status'] = 'Opened';
             }
             await onFormSubmit(params);
             router.push('/dms');
@@ -113,68 +128,6 @@ const TicketForm = ({ title, onFormSubmit, ticket, successMessage }) => {
                                         error={Boolean(errors.title)}
                                         {...(errors.title && { helperText: errors.title.message })}
                                     />
-                                )}
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <Controller
-                                name='description'
-                                control={control}
-                                rules={{ required: true }}
-                                render={({ field: { value, onChange, onBlur } }) => (
-                                    <CustomTextField
-                                        fullWidth
-                                        autoComplete="off"
-                                        label='Description'
-                                        value={value}
-                                        onBlur={onBlur}
-                                        onChange={onChange}
-                                        error={Boolean(errors.description)}
-                                        {...(errors.description && { helperText: errors.description.message })}
-                                    />
-                                )}
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <Controller
-                                name='contact'
-                                control={control}
-                                rules={{ required: true }}
-                                render={({ field: { value, onChange, onBlur } }) => (
-                                    <CustomTextField
-                                        fullWidth
-                                        autoComplete="off"
-                                        label='Contact'
-                                        value={value}
-                                        onBlur={onBlur}
-                                        onChange={onChange}
-                                        error={Boolean(errors.contact)}
-                                        {...(errors.contact && { helperText: errors.contact.message })}
-                                    />
-                                )}
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <Controller
-                                name='status'
-                                control={control}
-                                rules={{ required: true }}
-                                render={({ field: { value, onChange, onBlur } }) => (
-                                    <CustomTextField
-                                        select
-                                        fullWidth
-                                        label='Status'
-                                        value={value}
-                                        defaultValue=''
-                                        onBlur={onBlur}
-                                        onChange={onChange}
-                                        error={Boolean(errors.status)}
-                                        {...(errors.status && { helperText: errors.status.message })}
-                                    >
-                                        <MenuItem value='Opened'>Opened</MenuItem>
-                                        <MenuItem value='In-progress'>In-progress</MenuItem>
-                                        <MenuItem value='Completed'>Completed</MenuItem>
-                                    </CustomTextField>
                                 )}
                             />
                         </Grid>
@@ -229,60 +182,121 @@ const TicketForm = ({ title, onFormSubmit, ticket, successMessage }) => {
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             <Controller
-                                name='location'
+                                name='contact'
+                                control={control}
+                                rules={{ required: true }}
+                                render={({ field: { value, onChange, onBlur } }) => (
+                                    <CustomTextField
+                                        fullWidth
+                                        autoComplete="off"
+                                        label='Contact'
+                                        value={value}
+                                        onBlur={onBlur}
+                                        onChange={onChange}
+                                        error={Boolean(errors.contact)}
+                                        {...(errors.contact && { helperText: errors.contact.message })}
+                                    />
+                                )}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <Controller
+                                name='stationId'
                                 control={control}
                                 rules={{ required: true }}
                                 render={({ field: { value, onChange, onBlur } }) => (
                                     <CustomTextField
                                         select
                                         fullWidth
-                                        label='Location'
+                                        label='Station'
                                         value={value}
                                         defaultValue=''
                                         onBlur={onBlur}
                                         onChange={(e) => {
+                                            handleStationChange(e.target.value);
                                             onChange(e);
-                                            handleLocationChange(e?.target?.value);
                                         }}
-                                        error={Boolean(errors.location)}
-                                        {...(errors.location && { helperText: errors.location.message })}
+                                        error={Boolean(errors.stationId)}
+                                        {...(errors.stationId && { helperText: errors.stationId.message })}
                                     >
-                                        <MenuItem value='Station'>Station</MenuItem>
-                                        <MenuItem value='Room'>Room</MenuItem>
-                                        <MenuItem value='Vehicle'>Vehicle</MenuItem>
+                                        {data?.stations?.map((station) =>
+                                            <MenuItem key={`item#${station?.id}`} value={station?.id}>{station?.name}</MenuItem>
+                                        )}
                                     </CustomTextField>
                                 )}
                             />
                         </Grid>
-                        {(selectedLocation || ticket) &&
-                            <Grid item xs={12} sm={6}>
-                                <Controller
-                                    name='locationId'
-                                    control={control}
-                                    rules={{ required: true }}
-                                    render={({ field: { value, onChange, onBlur } }) => (
-                                        <CustomTextField
-                                            select
-                                            fullWidth
-                                            label={selectedLocation}
-                                            value={value}
-                                            defaultValue=''
-                                            onBlur={onBlur}
-                                            onChange={onChange}
-                                            error={Boolean(errors.locationId)}
-                                            {...(errors.locationId && { helperText: errors.locationId.message })}
-                                        >
-                                            {data[`${selectedLocation.toLowerCase()}s`]?.map((item) =>
-                                                <MenuItem key={`item#${item?.id}`} value={item?.id}>{item?.name}</MenuItem>
-                                            )}
-                                        </CustomTextField>
-                                    )}
-                                />
-                            </Grid>}
+                        {selectedStation &&
+                            <>
+                                <Grid item xs={12} sm={6}>
+                                    <Typography>Location</Typography>
+                                    <Controller
+                                        name='location'
+                                        control={control}
+                                        rules={{ required: true }}
+                                        render={({ field: { value, onChange, onBlur } }) => (
+                                            <RadioGroup row name='location' value={value}
+                                                onChange={(e) => {
+                                                    setSelectedLocation(e.target.value);
+                                                    onChange(e);
+                                                }}
+                                            >
+                                                <FormControlLabel value='Room' control={<Radio />} label='Room' />
+                                                <FormControlLabel value='Vehicle' control={<Radio />} label='Vehicle' />
+                                            </RadioGroup>
+                                        )}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <Controller
+                                        name='locationId'
+                                        control={control}
+                                        rules={{ required: true }}
+                                        render={({ field: { value, onChange, onBlur } }) => (
+                                            <CustomTextField
+                                                select
+                                                fullWidth
+                                                label={selectedLocation}
+                                                value={value}
+                                                defaultValue=''
+                                                onBlur={onBlur}
+                                                onChange={onChange}
+                                                error={Boolean(errors.locationId)}
+                                                {...(errors.locationId && { helperText: errors.locationId.message })}
+                                            >
+                                                {stationData[`${selectedLocation.toLowerCase()}s`]?.map((item) =>
+                                                    <MenuItem key={`item#${item?.id}`} value={item?.id}>{item?.name}</MenuItem>
+                                                )}
+                                            </CustomTextField>
+                                        )}
+                                    />
+                                </Grid>
+                            </>}
+                        <Grid item xs={12}>
+                            <Controller
+                                name='description'
+                                control={control}
+                                rules={{ required: true }}
+                                render={({ field: { value, onChange, onBlur } }) => (
+                                    <CustomTextField
+                                        fullWidth
+                                        multiline
+                                        minRows={8}
+                                        autoComplete="off"
+                                        label='Description'
+                                        value={value}
+                                        onBlur={onBlur}
+                                        onChange={onChange}
+                                        error={Boolean(errors.description)}
+                                        {...(errors.description && { helperText: errors.description.message })}
+                                    />
+                                )}
+                            />
+                        </Grid>
                     </Grid>
                 </CardContent>
                 <Divider sx={{ m: '0 !important' }} />
-                <CardActions>
+                <CardActions sx={{ justifyContent: 'flex-end' }}>
                     <Button type='submit' sx={{ mr: 2 }} variant='contained'>
                         Submit
                     </Button>

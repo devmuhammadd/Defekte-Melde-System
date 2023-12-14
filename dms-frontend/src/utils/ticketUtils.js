@@ -17,6 +17,13 @@ export const urgencyColorSelector = {
     'Critical': 'error'
 }
 
+export const backgroundColorSelector = {
+    'Low': 'rgba(0, 207, 232, 0.16)',
+    'Medium': 'rgba(168, 170, 174, 0.16)',
+    'High': 'rgba(255, 159, 67, 0.16)',
+    'Critical': 'rgba(234, 84, 85, 0.16)'
+}
+
 export const calculateTicketStats = (stats) => {
     return [
         {
