@@ -17,7 +17,7 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     access_token = create_access_token(
         data={"sub": user.username}
     )
-    return {"token": {"access_token": access_token, "token_type": "bearer"}, "user": user}
+    return {"token": {"access_token": access_token, "token_type": "bearer"}, "user": user.to_dict()}
 
 
 @router.post("/login", response_model=UserToken)
@@ -32,7 +32,7 @@ def login_for_access_token(user_data: UserLogin, db: Session = Depends(get_db)):
     access_token = create_access_token(
         data={"sub": user.username}
     )
-    return {"token": {"access_token": access_token, "token_type": "bearer"}, "user": user}
+    return {"token": {"access_token": access_token, "token_type": "bearer"}, "user": user.to_dict()}
 
 
 @router.get("/me", response_model=ShowUser, status_code=status.HTTP_200_OK)
@@ -50,7 +50,8 @@ def update_user_profile(user_payload: UserUpdate, current_user: ShowUser = Depen
 
 @router.put("/password", status_code=status.HTTP_200_OK)
 def update_user_password(password_payload: PasswordUpdate, current_user: ShowUser = Depends(authenticate_user_token), db: Session = Depends(get_db)):
-    is_updated = update_password(current_user.username, password_payload, db)
+    is_updated = update_password(
+        current_user.username, password_payload, db)
 
     if not is_updated:
         raise HTTPException(

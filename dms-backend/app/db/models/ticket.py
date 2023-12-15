@@ -1,11 +1,9 @@
-from app.db.models.station import Station
 from app.db.models.room import Room
 from app.db.models.vehicle import Vehicle
 from app.db.session import get_db
 from app.db.base import Base
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, func
 from sqlalchemy.orm import relationship, Session
-from sqlalchemy import func
 
 
 class Ticket(Base):

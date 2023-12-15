@@ -5,4 +5,7 @@ export default {
     TicketUrl: id => `/tickets/${id}`,
     NewTicketDataUrl: '/tickets/new',
     StationDataUrl: id => `/stations/${id}`,
+    //Organizations
+    createOrganizationUrl: '/organizations',
+    getOrganizationByNameUrl: name => `/organizations/${name}`,
 };

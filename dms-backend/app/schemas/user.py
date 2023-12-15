@@ -21,8 +21,9 @@ class ShowUser(BaseModel):
     id: int
     email: EmailStr
     username: constr()
-    is_active: bool
     full_name: str
+    role: str
+    organization: str
 
     class Config:
         from_attributes = True
