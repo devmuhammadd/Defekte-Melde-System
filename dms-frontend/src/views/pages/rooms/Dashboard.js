@@ -1,43 +1,43 @@
 // ** MUI Imports
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
-import { useStation } from 'src/hooks'
+import { useRoom } from 'src/hooks'
 import { useEffect } from 'react'
 import { Box, Button, CircularProgress } from '@mui/material'
 import Icon from 'src/@core/components/icon'
 import { useRouter } from 'next/router'
-import StationsTable from './StationsTable'
+import RoomsTable from './RoomsTable'
 import toast from 'react-hot-toast'
 import { useAuth } from 'src/hooks/useAuth'
 
 const Dashboard = () => {
     const router = useRouter();
     const { user } = useAuth();
-    const { stations, loading, deleteStation, getStations } = useStation();
+    const { rooms, loading, deleteRoom, getRooms } = useRoom();
 
     useEffect(() => {
         if (user?.role !== 'admin') router.push('/');
-        getStations(user?.organizationId);
+        getRooms(user?.organizationId);
     }, []);
 
-    const handleNewStationClick = () => {
-        router.push('/stations?newStation=true');
+    const handleNewRoomClick = () => {
+        router.push('/rooms?newRoom=true');
     }
 
-    const handleDeleteStation = async (station) => {
-        const response = confirm(`Are you sure you want to delete the ${station?.name} station?`)
+    const handleDeleteRoom = async (room) => {
+        const response = confirm(`Are you sure you want to delete the ${room?.name} room?`)
         if (response) {
             try {
-                await deleteStation(station?.id);
-                toast.success("Station deleted successfully!");
+                await deleteRoom(room?.id);
+                toast.success("Room deleted successfully!");
             } catch (err) {
-                toast.error("Unable to delete a station!");
+                toast.error("Unable to delete a room!");
             }
         }
     }
 
-    const handleEditStation = (stationId) => {
-        router.push(`/stations?stationId=${stationId}`);
+    const handleEditRoom = (roomId) => {
+        router.push(`/rooms?roomId=${roomId}`);
     }
 
     if (loading || user?.role !== 'admin') {
@@ -56,16 +56,16 @@ const Dashboard = () => {
             <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                 <Button variant='contained' color='primary'
                     endIcon={<Icon icon='ic:baseline-plus' />}
-                    onClick={handleNewStationClick}
+                    onClick={handleNewRoomClick}
                 >
-                    New Station
+                    New Room
                 </Button>
             </Grid>
             <Grid item xs={12}>
-                <StationsTable
-                    stations={stations}
-                    handleDeleteStation={handleDeleteStation}
-                    handleEditStation={handleEditStation}
+                <RoomsTable
+                    rooms={rooms}
+                    handleDeleteRoom={handleDeleteRoom}
+                    handleEditRoom={handleEditRoom}
                 />
             </Grid>
         </Grid >

@@ -16,6 +16,7 @@ const Dashboard = () => {
     const { vehicles, loading, deleteVehicle, getVehicles } = useVehicle();
 
     useEffect(() => {
+        if (user?.role !== 'admin') router.push('/');
         getVehicles(user?.organizationId);
     }, []);
 
@@ -39,7 +40,7 @@ const Dashboard = () => {
         router.push(`/vehicles?vehicleId=${vehicleId}`);
     }
 
-    if (loading) {
+    if (loading || user?.role !== 'admin') {
         return (
             <Grid item xs={12}>
                 <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column', justifyContent: 'center' }}>

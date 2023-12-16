@@ -14,6 +14,7 @@ import TicketSlice from "./slices/TicketSlice";
 import StationSlice from "./slices/StationSlice";
 import UserSlice from "./slices/UserSlice";
 import VehicleSlice from "./slices/VehicleSlice";
+import RoomSlice from "./slices/RoomSlice";
 
 const persistConfig = {
     key: 'counter',
@@ -25,6 +26,7 @@ const reducers = combineReducers({
     [StationSlice.name]: StationSlice.reducer,
     [UserSlice.name]: UserSlice.reducer,
     [VehicleSlice.name]: VehicleSlice.reducer,
+    [RoomSlice.name]: RoomSlice.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, reducers);

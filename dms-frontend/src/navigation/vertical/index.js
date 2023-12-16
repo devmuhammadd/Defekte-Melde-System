@@ -1,5 +1,29 @@
 const navigation = () => {
   return [
+    {
+      title: 'DMS',
+      path: '/dms',
+      icon: 'ion:ticket-outline',
+      'authority': 'everyone'
+    },
+    {
+      title: 'Station Management',
+      path: '/stations',
+      icon: 'mdi:fire-station',
+      'authority': 'admin'
+    },
+    {
+      title: 'Vehicle Management',
+      path: '/vehicles',
+      icon: 'tdesign:vehicle',
+      'authority': 'admin'
+    },
+    {
+      title: 'Room Management',
+      path: '/rooms',
+      icon: 'fluent-mdl2:room',
+      'authority': 'admin'
+    },
     // {
     //   title: 'Personalverwaltung',
     //   path: '/',
@@ -10,21 +34,6 @@ const navigation = () => {
     //   path: '/',
     //   icon: 'tdesign:vehicle',
     // },
-    {
-      title: 'Station Management',
-      path: '/stations',
-      icon: 'mdi:fire-station',
-    },
-    {
-      title: 'Vehicle Management',
-      path: '/vehicles',
-      icon: 'tdesign:vehicle',
-    },
-    {
-      title: 'DMS',
-      path: '/dms',
-      icon: 'uil:setting',
-    },
     // {
     //   title: 'Einheiten',
     //   path: '/',

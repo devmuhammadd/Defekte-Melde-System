@@ -20,4 +20,9 @@ export default {
     createVehicleUrl: '/vehicles',
     vehicleUrl: id => `/vehicles/${id}`,
     newVehicleDataUrl: '/vehicles/new',
+    //Rooms
+    roomsUrl: (organizationId) => `/rooms?organization_id=${organizationId}`,
+    createRoomUrl: '/rooms',
+    roomUrl: id => `/rooms/${id}`,
+    newRoomDataUrl: '/rooms/new',
 };

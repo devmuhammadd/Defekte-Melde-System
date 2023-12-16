@@ -26,7 +26,7 @@ const schema = yup.object().shape({
     stationId: yup.string().required(),
 });
 
-const VehicleForm = ({ title, onFormSubmit, vehicle, successMessage }) => {
+const RoomForm = ({ title, onFormSubmit, room, successMessage }) => {
     const router = useRouter();
     const { stations, getStations } = useStation();
     const { user } = useAuth();
@@ -43,17 +43,17 @@ const VehicleForm = ({ title, onFormSubmit, vehicle, successMessage }) => {
         mode: 'onBlur',
         resolver: yupResolver(schema),
         defaultValues: {
-            name: vehicle?.name || '',
-            stationId: vehicle?.stationId || '',
+            name: room?.name || '',
+            stationId: room?.stationId || '',
         }
     })
 
     const onSubmit = async data => {
         try {
             const params = data;
-            if (vehicle) params['id'] = vehicle?.id;
+            if (room) params['id'] = room?.id;
             await onFormSubmit(params);
-            router.push('/vehicles');
+            router.push('/rooms');
             toast.success(successMessage);
         } catch (err) {
             toast.error("Unable to proceed!");
@@ -61,7 +61,7 @@ const VehicleForm = ({ title, onFormSubmit, vehicle, successMessage }) => {
     }
 
     const handleCancel = () => {
-        router.push('/vehicles');
+        router.push('/rooms');
     }
 
     return (
@@ -130,4 +130,4 @@ const VehicleForm = ({ title, onFormSubmit, vehicle, successMessage }) => {
     )
 }
 
-export default VehicleForm
+export default RoomForm

@@ -46,7 +46,7 @@ const StationForm = ({ title, onFormSubmit, station, successMessage }) => {
         mode: 'onBlur',
         resolver: yupResolver(schema),
         defaultValues: {
-            name: station?.title || '',
+            name: station?.name || '',
             chiefId: station?.chiefId || '',
         }
     })
