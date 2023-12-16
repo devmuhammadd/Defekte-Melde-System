@@ -12,7 +12,7 @@ const UserSlice = createSlice({
     },
     reducers: {
         setUsers: (state, { payload }) => {
-            state.stations = payload;
+            state.users = payload;
         },
         loadingStart: state => {
             state.loading = true;
@@ -32,7 +32,7 @@ export const useUserActions = () => {
 
     const getUsers = async (organizationId) => {
         dispatch(loadingStart());
-        await getUsersApi().then((res) => {
+        await getUsersApi(organizationId).then((res) => {
             dispatch(setUsers(res?.data));
         });
         dispatch(loadingCompleted());

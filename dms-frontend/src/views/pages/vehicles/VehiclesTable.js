@@ -9,23 +9,23 @@ import TableContainer from '@mui/material/TableContainer'
 import { Icon } from '@iconify/react'
 import { Tooltip } from '@mui/material'
 
-const StationsTable = ({ stations, handleDeleteStation, handleEditStation }) => {
+const VehiclesTable = ({ vehicles, handleDeleteVehicle, handleEditVehicle }) => {
     return (
         <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650 }} aria-label='simple table'>
                 <TableHead>
                     <TableRow>
                         <TableCell>Name</TableCell>
-                        <TableCell>Chief</TableCell>
+                        <TableCell>Station</TableCell>
                         <TableCell>Actions</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {stations?.length > 0 ?
-                        stations?.map(station => {
+                    {vehicles?.length > 0 ?
+                        vehicles?.map(vehicle => {
                             return (
                                 <TableRow
-                                    key={station?.id}
+                                    key={vehicle?.id}
                                     sx={{
                                         '&:last-of-type td, &:last-of-type th': {
                                             border: 0
@@ -33,20 +33,20 @@ const StationsTable = ({ stations, handleDeleteStation, handleEditStation }) => 
                                     }}
                                 >
                                     <TableCell component='th' scope='row'>
-                                        {station?.name}
+                                        {vehicle?.name}
                                     </TableCell>
-                                    <TableCell>{station?.chief}</TableCell>
+                                    <TableCell>{vehicle?.station}</TableCell>
                                     <TableCell sx={{ display: 'flex', gap: '10px' }}>
                                         <Tooltip title='Edit' placement='top'>
                                             <Icon icon="tabler:edit" width="24" height="24"
                                                 style={{ cursor: 'pointer' }}
-                                                onClick={() => handleEditStation(station?.id)}
+                                                onClick={() => handleEditVehicle(vehicle?.id)}
                                             />
                                         </Tooltip>
                                         <Tooltip title='Delete' placement='top'>
                                             <Icon icon="material-symbols:delete-outline" width="24" height="24"
                                                 style={{ cursor: 'pointer' }}
-                                                onClick={() => handleDeleteStation(station)}
+                                                onClick={() => handleDeleteVehicle(vehicle)}
                                             />
                                         </Tooltip>
                                     </TableCell>
@@ -55,7 +55,7 @@ const StationsTable = ({ stations, handleDeleteStation, handleEditStation }) => 
                         })
                         :
                         <TableRow>
-                            <TableCell colSpan={6}>No stations found</TableCell>
+                            <TableCell colSpan={6}>No vehicles found</TableCell>
                         </TableRow>
                     }
                 </TableBody>
@@ -64,4 +64,4 @@ const StationsTable = ({ stations, handleDeleteStation, handleEditStation }) => 
     )
 }
 
-export default StationsTable
+export default VehiclesTable

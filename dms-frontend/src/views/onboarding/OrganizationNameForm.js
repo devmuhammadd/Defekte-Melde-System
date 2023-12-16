@@ -13,7 +13,7 @@ import * as yup from 'yup'
 import { Controller, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import toast from 'react-hot-toast'
-import { getOrganizationByNameApi } from 'src/repository/OrganizationRepository';
+import { getOrganizationByNameApi } from 'src/repository/OrganizationsRepository';
 import { useAuth } from 'src/hooks/useAuth'
 import { useRouter } from 'next/router'
 

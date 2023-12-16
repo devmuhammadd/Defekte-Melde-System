@@ -1,13 +1,13 @@
 
 from app.utils.user import authenticate_user_token
 from app.schemas.user import ShowUser
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 from app.db.session import get_db
 from typing import List
 from app.db.models.organization import Organization
 from app.db.models.user import User
-from app.schemas.organization import OrganizationCreate, ShowOrganization
+from app.schemas.organization import OrganizationCreate
 
 router = APIRouter(prefix="/organizations")
 

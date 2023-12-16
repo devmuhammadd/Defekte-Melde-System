@@ -8,10 +8,16 @@ export default {
     //Organizations
     createOrganizationUrl: '/organizations',
     getOrganizationByNameUrl: name => `/organizations/${name}`,
-    getUsersUrl: id => `/users?organizationId=${id}`,
+    getUsersUrl: organizationId => `/users?organization_id=${organizationId}`,
     //Stations
     stationDataUrl: id => `/stations/${id}/data`,
-    stationsUrl: '/stations',
+    stationsUrl: (organizationId) => `/stations?organization_id=${organizationId}`,
+    createStationUrl: '/stations',
     stationUrl: id => `/stations/${id}`,
     newStationDataUrl: '/stations/new',
+    //Vehicles
+    vehiclesUrl: (organizationId) => `/vehicles?organization_id=${organizationId}`,
+    createVehicleUrl: '/vehicles',
+    vehicleUrl: id => `/vehicles/${id}`,
+    newVehicleDataUrl: '/vehicles/new',
 };

@@ -1,8 +1,12 @@
+// ** React Imports
+import { useEffect, useState } from 'react'
+
 // ** MUI Imports
 import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
+import MenuItem from '@mui/material/MenuItem'
 import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 import CardActions from '@mui/material/CardActions'
@@ -12,20 +16,24 @@ import CustomTextField from 'src/@core/components/mui/text-field'
 import * as yup from 'yup'
 import { Controller, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import toast from 'react-hot-toast'
-import { createOrganizationApi, getOrganizationApi } from 'src/repository/OrganizationsRepository';
-import { useAuth } from 'src/hooks/useAuth'
 import { useRouter } from 'next/router'
+import { useAuth } from 'src/hooks/useAuth'
+import toast from 'react-hot-toast'
+import { useStation, useUser } from 'src/hooks';
 
 const schema = yup.object().shape({
     name: yup.string().required(),
-    cityName: yup.string().required(),
-    postalCode: yup.string().required(),
+    stationId: yup.string().required(),
 });
 
-const AddOrganizationForm = ({ organization }) => {
-    const { user, setUser } = useAuth();
+const VehicleForm = ({ title, onFormSubmit, vehicle, successMessage }) => {
     const router = useRouter();
+    const { stations, getStations } = useStation();
+    const { user } = useAuth();
+
+    useEffect(() => {
+        getStations(user?.organizationId);
+    }, []);
 
     const {
         control,
@@ -35,32 +43,35 @@ const AddOrganizationForm = ({ organization }) => {
         mode: 'onBlur',
         resolver: yupResolver(schema),
         defaultValues: {
-            name: organization?.name || '',
-            cityName: '',
-            postalCode: '',
+            name: vehicle?.title || '',
+            stationId: vehicle?.stationId || '',
         }
     })
 
     const onSubmit = async data => {
         try {
             const params = data;
-            createOrganizationApi(params).then((res) => {
-                setUser({ ...user, organization: res?.data?.organization, role: res?.data?.role });
-                router.push('/');
-            })
+            if (vehicle) params['id'] = vehicle?.id;
+            await onFormSubmit(params);
+            router.push('/vehicles');
+            toast.success(successMessage);
         } catch (err) {
-            toast.error("Unable to fetch organization!");
+            toast.error("Unable to proceed!");
         }
     }
 
+    const handleCancel = () => {
+        router.push('/vehicles');
+    }
+
     return (
-        <Card sx={{ width: '50%', marginX: 'auto' }}>
-            <CardHeader title="Add Your Organization" />
+        <Card>
+            <CardHeader title={title} />
             <Divider sx={{ m: '0 !important' }} />
             <form onSubmit={handleSubmit(onSubmit)}>
                 <CardContent>
                     <Grid container spacing={5}>
-                        <Grid item xs={12}>
+                        <Grid item xs={12} sm={6}>
                             <Controller
                                 name='name'
                                 control={control}
@@ -81,47 +92,37 @@ const AddOrganizationForm = ({ organization }) => {
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             <Controller
-                                name='cityName'
+                                name='stationId'
                                 control={control}
                                 rules={{ required: true }}
                                 render={({ field: { value, onChange, onBlur } }) => (
                                     <CustomTextField
+                                        select
                                         fullWidth
-                                        autoComplete="off"
-                                        label='City Name'
+                                        label='Station'
                                         value={value}
+                                        defaultValue=''
                                         onBlur={onBlur}
                                         onChange={onChange}
-                                        error={Boolean(errors.cityName)}
-                                        {...(errors.cityName && { helperText: errors.cityName.message })}
-                                    />
-                                )}
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <Controller
-                                name='postalCode'
-                                control={control}
-                                rules={{ required: true }}
-                                render={({ field: { value, onChange, onBlur } }) => (
-                                    <CustomTextField
-                                        fullWidth
-                                        autoComplete="off"
-                                        label='Postal Code'
-                                        value={value}
-                                        onBlur={onBlur}
-                                        onChange={onChange}
-                                        error={Boolean(errors.postalCode)}
-                                        {...(errors.postalCode && { helperText: errors.postalCode.message })}
-                                    />
+                                        error={Boolean(errors.stationId)}
+                                        {...(errors.stationId && { helperText: errors.stationId.message })}
+                                    >
+                                        {stations?.map((station) =>
+                                            <MenuItem key={`station#${station?.id}`} value={station?.id}>{station?.name}</MenuItem>
+                                        )}
+                                    </CustomTextField>
                                 )}
                             />
                         </Grid>
                     </Grid>
                 </CardContent>
-                <CardActions sx={{ justifyContent: 'flex-end' }}>
-                    <Button type='submit' sx={{ width: '50%', marginX: 'auto' }} variant='contained'>
+                <Divider sx={{ m: '0 !important' }} />
+                <CardActions>
+                    <Button type='submit' sx={{ mr: 2 }} variant='contained'>
                         Submit
+                    </Button>
+                    <Button type='reset' color='secondary' variant='tonal' onClick={handleCancel}>
+                        Cancel
                     </Button>
                 </CardActions>
             </form>
@@ -129,4 +130,4 @@ const AddOrganizationForm = ({ organization }) => {
     )
 }
 
-export default AddOrganizationForm
+export default VehicleForm

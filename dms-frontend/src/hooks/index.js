@@ -1,7 +1,8 @@
 import { useSelector } from "react-redux";
-import { useTicketActions } from "src/redux/slices/TicketsSlice";
+import { useTicketActions } from "src/redux/slices/TicketSlice";
 import { useStationActions } from "src/redux/slices/StationSlice";
 import { useUserActions } from "src/redux/slices/UserSlice";
+import { useVehicleActions } from "src/redux/slices/VehicleSlice";
 
 export const useTicket = () => ({
     ...useSelector(state => state.ticketSlice),
@@ -16,4 +17,9 @@ export const useStation = () => ({
 export const useUser = () => ({
     ...useSelector(state => state.userSlice),
     ...useUserActions()
+});
+
+export const useVehicle = () => ({
+    ...useSelector(state => state.vehicleSlice),
+    ...useVehicleActions()
 });

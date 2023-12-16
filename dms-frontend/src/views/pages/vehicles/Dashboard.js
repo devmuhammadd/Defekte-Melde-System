@@ -1,45 +1,45 @@
 // ** MUI Imports
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
-import { useStation } from 'src/hooks'
+import { useVehicle } from 'src/hooks'
 import { useEffect } from 'react'
 import { Box, Button, CircularProgress } from '@mui/material'
 import Icon from 'src/@core/components/icon'
 import { useRouter } from 'next/router'
-import StationsTable from './StationsTable'
+import VehiclesTable from './VehiclesTable'
 import toast from 'react-hot-toast'
 import { useAuth } from 'src/hooks/useAuth'
 
 const Dashboard = () => {
     const router = useRouter();
     const { user } = useAuth();
-    const { stations, loading, deleteStation, getStations } = useStation();
+    const { vehicles, loading, deleteVehicle, getVehicles } = useVehicle();
 
     useEffect(() => {
-        getStations(user?.organizationId);
+        getVehicles(user?.organizationId);
     }, []);
 
-    const handleNewStationClick = () => {
-        router.push('/stations?newStation=true');
+    const handleNewVehicleClick = () => {
+        router.push('/vehicles?newVehicle=true');
     }
 
-    const handleDeleteStation = async (station) => {
-        const response = confirm(`Are you sure you want to delete the ${station?.name} station?`)
+    const handleDeleteVehicle = async (vehicle) => {
+        const response = confirm(`Are you sure you want to delete the ${vehicle?.name} vehicle?`)
         if (response) {
             try {
-                await deleteStation(station?.id);
-                toast.success("Station deleted successfully!");
+                await deleteVehicle(vehicle?.id);
+                toast.success("Vehicle deleted successfully!");
             } catch (err) {
-                toast.error("Unable to delete a station!");
+                toast.error("Unable to delete a vehicle!");
             }
         }
     }
 
-    const handleEditStation = (stationId) => {
-        router.push(`/stations?stationId=${stationId}`);
+    const handleEditVehicle = (vehicleId) => {
+        router.push(`/vehicles?vehicleId=${vehicleId}`);
     }
 
-    if (loading || !stations) {
+    if (loading) {
         return (
             <Grid item xs={12}>
                 <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column', justifyContent: 'center' }}>
@@ -55,16 +55,16 @@ const Dashboard = () => {
             <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                 <Button variant='contained' color='primary'
                     endIcon={<Icon icon='ic:baseline-plus' />}
-                    onClick={handleNewStationClick}
+                    onClick={handleNewVehicleClick}
                 >
-                    New Station
+                    New Vehicle
                 </Button>
             </Grid>
             <Grid item xs={12}>
-                <StationsTable
-                    stations={stations}
-                    handleDeleteStation={handleDeleteStation}
-                    handleEditStation={handleEditStation}
+                <VehiclesTable
+                    vehicles={vehicles}
+                    handleDeleteVehicle={handleDeleteVehicle}
+                    handleEditVehicle={handleEditVehicle}
                 />
             </Grid>
         </Grid >

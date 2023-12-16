@@ -24,6 +24,6 @@ class Station(Base):
             'name': self.name,
             'organization': self.organization.name,
             'organization_id': self.organization.id,
-            'chief': chief.full_name if chief else None,
-            'chief_id': chief.id if chief else None,
+            'chief': chief.full_name if chief else '',
+            'chief_id': chief.id if chief else '',
         }

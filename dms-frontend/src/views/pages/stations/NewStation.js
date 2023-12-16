@@ -1,13 +1,13 @@
 import { useStation } from 'src/hooks';
-import TicketForm from './StationForm';
+import StationForm from './StationForm';
 
 function NewStation() {
-    const { createOrganization } = useStation();
+    const { createStation } = useStation();
 
     return (
-        <TicketForm
+        <StationForm
             title="Add a Station"
-            onFormSubmit={createOrganization}
+            onFormSubmit={createStation}
             successMessage="Station added successfully!"
         />
     )

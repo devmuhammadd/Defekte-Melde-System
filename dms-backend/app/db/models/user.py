@@ -32,7 +32,7 @@ class User(Base):
             'id': self.id,
             'email': self.email,
             'username': self.username,
-            'full_name': self.email,
+            'full_name': self.full_name,
             'role': self.role or '',
             'organization': organization_name,
             'organization_id': organization_id,

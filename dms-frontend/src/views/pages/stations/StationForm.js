@@ -14,7 +14,6 @@ import CardActions from '@mui/material/CardActions'
 
 // ** Custom Component Import
 import CustomTextField from 'src/@core/components/mui/text-field'
-import { getNewTicketData, getStationData } from 'src/repository/TicketsRepository'
 import * as yup from 'yup'
 import { Controller, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -25,16 +24,18 @@ import { useUser } from 'src/hooks';
 
 const schema = yup.object().shape({
     name: yup.string().required(),
-    chief: yup.string().required(),
+    chiefId: yup.string().required(),
 });
 
 const StationForm = ({ title, onFormSubmit, station, successMessage }) => {
     const router = useRouter();
     const { users, getUsers } = useUser();
     const { user } = useAuth();
+    const [organizationUsers, setOrganizationUsers] = useState();
 
     useEffect(() => {
-        getUsers();
+        getUsers(user?.organizationId);
+        setOrganizationUsers(users.filter(u => u?.id !== user?.id));
     }, []);
 
     const {
@@ -112,7 +113,7 @@ const StationForm = ({ title, onFormSubmit, station, successMessage }) => {
                                         error={Boolean(errors.chiefId)}
                                         {...(errors.chiefId && { helperText: errors.chiefId.message })}
                                     >
-                                        {users?.map((user) =>
+                                        {organizationUsers?.map((user) =>
                                             <MenuItem key={`user#${user?.id}`} value={user?.id}>{user?.fullName}</MenuItem>
                                         )}
                                     </CustomTextField>
@@ -122,7 +123,7 @@ const StationForm = ({ title, onFormSubmit, station, successMessage }) => {
                     </Grid>
                 </CardContent>
                 <Divider sx={{ m: '0 !important' }} />
-                <CardActions sx={{ justifyContent: 'flex-end' }}>
+                <CardActions>
                     <Button type='submit' sx={{ mr: 2 }} variant='contained'>
                         Submit
                     </Button>

@@ -10,6 +10,7 @@ from app.db.models.station import Station
 from app.db.models.vehicle import Vehicle
 from app.db.models.station import Station
 from app.db.models.room import Room
+from app.db.models.user import User
 
 router = APIRouter(prefix="/stations")
 
@@ -29,10 +30,19 @@ def get_all_stations(
 
 @router.post("/", response_model=ShowStation, status_code=status.HTTP_201_CREATED)
 def create_station(station_data: StationCreate, current_user: ShowUser = Depends(authenticate_user_token), db: Session = Depends(get_db)):
-    new_station = Station(**station_data.model_dump())
+    new_station_data = {'name': station_data.name,
+                        'organization_id': station_data.organization_id}
+    new_station = Station(**new_station_data)
     db.add(new_station)
     db.commit()
     db.refresh(new_station)
+    chief_user = db.query(User).filter(
+        User.id == station_data.chief_id).first()
+    if chief_user:
+        chief_user.role = 'chief'
+        chief_user.station_id = new_station.id
+        db.commit()
+        db.refresh(chief_user)
     return new_station.to_dict()
 
 
