@@ -11,6 +11,7 @@ import {
     REGISTER,
 } from 'redux-persist';
 import TicketSlice from "./slices/TicketsSlice";
+import StationSlice from "./slices/StationSlice";
 
 const persistConfig = {
     key: 'counter',
@@ -18,7 +19,8 @@ const persistConfig = {
 };
 
 const reducers = combineReducers({
-    [TicketSlice.name]: TicketSlice.reducer
+    [TicketSlice.name]: TicketSlice.reducer,
+    [StationSlice.name]: StationSlice.reducer
 });
 
 const persistedReducer = persistReducer(persistConfig, reducers);

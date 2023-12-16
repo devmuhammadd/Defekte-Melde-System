@@ -1,7 +1,8 @@
+from typing import List
 from app.utils.user import authenticate_user_token, create_access_token, authenticate_user_credentials
-from app.db.models.user import create_new_user, update_password, update_user
+from app.db.models.user import User, create_new_user, update_password, update_user
 from app.db.session import get_db
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 from fastapi import Depends
 from fastapi import status
 from app.schemas.user import PasswordUpdate, ShowUser, UserCreate, UserLogin, UserUpdate
@@ -60,3 +61,16 @@ def update_user_password(password_payload: PasswordUpdate, current_user: ShowUse
         )
 
     return {"detail": "Password updated successfully!"}
+
+
+@router.get("/users", response_model=List[ShowUser], status_code=status.HTTP_200_OK)
+def get_all_users(
+    organization_id: int = Query(...,
+                                 description="Organization ID to filter users"),
+    current_user: ShowUser = Depends(authenticate_user_token),
+    db: Session = Depends(get_db)
+):
+    users = db.query(User).filter(
+        User.organization_id == organization_id).order_by(User.id).all()
+
+    return [user.to_dict() for user in users]

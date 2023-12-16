@@ -11,6 +11,11 @@ const navigation = () => {
     //   icon: 'tdesign:vehicle',
     // },
     {
+      title: 'Station Management',
+      path: '/stations',
+      icon: 'mdi:fire-station',
+    },
+    {
       title: 'DMS',
       path: '/dms',
       icon: 'uil:setting',

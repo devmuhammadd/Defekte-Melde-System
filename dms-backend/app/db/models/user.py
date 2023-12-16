@@ -26,6 +26,7 @@ class User(Base):
 
     def to_dict(self):
         organization_name = self.organization.name if self.organization else ''
+        organization_id = self.organization.id if self.organization else ''
 
         return {
             'id': self.id,
@@ -34,6 +35,7 @@ class User(Base):
             'full_name': self.email,
             'role': self.role or '',
             'organization': organization_name,
+            'organization_id': organization_id,
         }
 
 
@@ -77,3 +79,9 @@ def update_password(username: str, password_payload: PasswordUpdate, db: Session
     db.commit()
     db.refresh(user)
     return True
+
+
+def get_station_chief_user(station_id: int, db: Session):
+    user = db.query(User).filter(
+        User.station_id == station_id and User.role == 'chief').first()
+    return user if user else None

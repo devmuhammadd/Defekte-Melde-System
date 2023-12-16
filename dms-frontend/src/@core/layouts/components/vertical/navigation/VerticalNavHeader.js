@@ -12,6 +12,7 @@ import Icon from 'src/@core/components/icon'
 
 // ** Configs
 import themeConfig from 'src/configs/themeConfig'
+import { useAuth } from 'src/hooks/useAuth'
 
 // ** Styled Components
 const MenuHeaderWrapper = styled(Box)(({ theme }) => ({
@@ -52,6 +53,7 @@ const VerticalNavHeader = props => {
 
   // ** Hooks & Vars
   const theme = useTheme()
+  const { user } = useAuth();
   const { navCollapsed } = settings
   const menuCollapsedStyles = navCollapsed && !navHover ? { opacity: 0 } : { opacity: 1 }
 
@@ -104,7 +106,7 @@ const VerticalNavHeader = props => {
             />
           </svg>
           <HeaderTitle variant='h4' sx={{ ...menuCollapsedStyles, ...(navCollapsed && !navHover ? {} : { ml: 2.5 }) }}>
-            {themeConfig.templateName}
+            {themeConfig.templateName}{user?.organization ? ` - ${user?.organization}` : ''}
           </HeaderTitle>
         </LinkStyled>
       )}

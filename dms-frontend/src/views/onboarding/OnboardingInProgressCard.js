@@ -42,7 +42,7 @@ const OnboardingInProgressCard = ({ organization }) => {
                     Congratulations!
                 </Typography>
                 <Typography sx={{ mb: 6, color: 'text.secondary' }}>
-                    You have successfully registered your account in {organization?.name}. Your onboarding is in progress. You can access the dashboard as soon as the admin assigns you a role!
+                    You have successfully registered your account in <strong>{user?.organization}</strong>. Your onboarding is in progress. You can access the dashboard as soon as the admin assigns you a role!
                 </Typography>
                 <Divider sx={{ m: '0 !important' }} />
                 <Typography sx={{ mb: 6, color: 'text.secondary', fontWeight: 'bold' }}>

@@ -8,4 +8,10 @@ export default {
     //Organizations
     createOrganizationUrl: '/organizations',
     getOrganizationByNameUrl: name => `/organizations/${name}`,
+    getUsersUrl: id => `/users?organizationId=${id}`,
+    //Stations
+    stationDataUrl: id => `/stations/${id}/data`,
+    stationsUrl: '/stations',
+    stationUrl: id => `/stations/${id}`,
+    newStationDataUrl: '/stations/new',
 };

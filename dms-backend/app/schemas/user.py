@@ -24,6 +24,7 @@ class ShowUser(BaseModel):
     full_name: str
     role: str
     organization: str
+    organization_id: int
 
     class Config:
         from_attributes = True
