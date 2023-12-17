@@ -8,7 +8,9 @@ export default {
     //Organizations
     createOrganizationUrl: '/organizations',
     getOrganizationByNameUrl: name => `/organizations/${name}`,
+    //Users
     getUsersUrl: organizationId => `/users?organization_id=${organizationId}`,
+    userUrl: id => `/users/${id}`,
     //Stations
     stationDataUrl: id => `/stations/${id}/data`,
     stationsUrl: (organizationId) => `/stations?organization_id=${organizationId}`,

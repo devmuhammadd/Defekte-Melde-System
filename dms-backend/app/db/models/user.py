@@ -1,6 +1,6 @@
 from app.db.base import Base
 from app.core.hashing import Hasher
-from app.schemas.user import PasswordUpdate, UserCreate, UserUpdate, ShowUser
+from app.schemas.user import PasswordUpdate, UserCreate, UserProfileUpdate, ShowUser
 from sqlalchemy.orm import Session, relationship
 from sqlalchemy import Boolean, Column, Integer, String, ForeignKey
 
@@ -25,17 +25,16 @@ class User(Base):
         station_id], backref="station")
 
     def to_dict(self):
-        organization_name = self.organization.name if self.organization else ''
-        organization_id = self.organization.id if self.organization else ''
-
         return {
             'id': self.id,
             'email': self.email,
             'username': self.username,
             'full_name': self.full_name,
             'role': self.role or '',
-            'organization': organization_name,
-            'organization_id': organization_id,
+            'organization': self.organization.name if self.organization else None,
+            'organization_id': self.organization.id if self.organization else None,
+            'station': self.station.name if self.station else None,
+            'station_id': self.station.id if self.station else None,
         }
 
 
@@ -55,7 +54,7 @@ def create_new_user(user: UserCreate, db: Session):
     return user
 
 
-def update_user(user: ShowUser, user_payload: UserUpdate, db: Session):
+def update_user(user: ShowUser, user_payload: UserProfileUpdate, db: Session):
     for key, value in user_payload.dict(exclude_unset=True).items():
         setattr(user, key, value)
 

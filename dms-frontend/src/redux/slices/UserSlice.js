@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { useDispatch } from 'react-redux';
 import {
-    getUsersApi
+    getUsersApi, updateUserApi
 } from 'src/repository/UsersRepository';
 
 const UserSlice = createSlice({
@@ -13,6 +13,12 @@ const UserSlice = createSlice({
     reducers: {
         setUsers: (state, { payload }) => {
             state.users = payload;
+        },
+        updateUserParams: (state, { payload }) => {
+            const updatedUsers = [...state.users];
+            const index = updatedUsers.findIndex((user) => user.id === payload.id);
+            updatedUsers[index] = payload;
+            state.users = updatedUsers;
         },
         loadingStart: state => {
             state.loading = true;
@@ -26,6 +32,7 @@ const UserSlice = createSlice({
 export const useUserActions = () => {
     const dispatch = useDispatch();
     const { setUsers,
+        updateUserParams,
         loadingStart,
         loadingCompleted
     } = UserSlice.actions;
@@ -38,7 +45,15 @@ export const useUserActions = () => {
         dispatch(loadingCompleted());
     };
 
-    return { getUsers };
+    const updateUser = async (params) => {
+        dispatch(loadingStart());
+        await updateUserApi(params).then((res) => {
+            dispatch(updateUserParams(res?.data));
+        });
+        dispatch(loadingCompleted());
+    };
+
+    return { getUsers, updateUser };
 };
 
 export default UserSlice;

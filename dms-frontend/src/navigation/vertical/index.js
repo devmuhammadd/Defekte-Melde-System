@@ -24,6 +24,12 @@ const navigation = () => {
       icon: 'fluent-mdl2:room',
       'authority': 'admin'
     },
+    {
+      title: 'User Management',
+      path: '/users',
+      icon: 'mdi:human-queue',
+      'authority': 'admin'
+    },
     // {
     //   title: 'Personalverwaltung',
     //   path: '/',

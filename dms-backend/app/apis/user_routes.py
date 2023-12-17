@@ -5,7 +5,7 @@ from app.db.session import get_db
 from fastapi import APIRouter, HTTPException, Query
 from fastapi import Depends
 from fastapi import status
-from app.schemas.user import PasswordUpdate, ShowUser, UserCreate, UserLogin, UserUpdate
+from app.schemas.user import PasswordUpdate, ShowUser, UserCreate, UserLogin, UserProfileUpdate, UserUpdate
 from app.schemas.user_token import UserToken
 from sqlalchemy.orm import Session
 
@@ -43,7 +43,7 @@ def get_current_user(current_user: ShowUser = Depends(authenticate_user_token)):
 
 
 @router.put("/profile", response_model=ShowUser, status_code=status.HTTP_200_OK)
-def update_user_profile(user_payload: UserUpdate, current_user: ShowUser = Depends(authenticate_user_token), db: Session = Depends(get_db)):
+def update_user_profile(user_payload: UserProfileUpdate, current_user: ShowUser = Depends(authenticate_user_token), db: Session = Depends(get_db)):
     user = update_user(current_user, user_payload, db)
 
     return user
@@ -74,3 +74,15 @@ def get_all_users(
         User.organization_id == organization_id).order_by(User.id).all()
 
     return [user.to_dict() for user in users]
+
+
+@router.put("/users/{user_id}", response_model=ShowUser, status_code=status.HTTP_200_OK)
+def update_user(user_id: int, user_data: UserUpdate, current_user: ShowUser = Depends(authenticate_user_token), db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    for key, value in user_data.model_dump().items():
+        setattr(user, key, value)
+    db.commit()
+    db.refresh(user)
+    return user.to_dict()
