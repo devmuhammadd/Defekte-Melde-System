@@ -17,14 +17,18 @@ const Dashboard = () => {
     useEffect(() => {
         if (user?.role !== 'admin') router.push('/');
         getUsers(user?.organizationId);
-        setOrganizationUsers(users.filter(u => u?.id !== user?.id));
     }, []);
+
+    useEffect(() => {
+        setOrganizationUsers(users.filter(u => u?.id !== user?.id));
+    }, [users]);
+
 
     const handleEditUser = (userId) => {
         router.push(`/users?userId=${userId}`);
     }
 
-    if (loading || user?.role !== 'admin') {
+    if (loading || user?.role !== 'admin' || organizationUsers?.length === 0) {
         return (
             <Grid item xs={12}>
                 <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column', justifyContent: 'center' }}>

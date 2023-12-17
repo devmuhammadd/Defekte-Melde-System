@@ -1,31 +1,31 @@
 const navigation = () => {
   return [
     {
-      title: 'DMS',
+      title: 'Tickets',
       path: '/dms',
       icon: 'ion:ticket-outline',
       'authority': 'everyone'
     },
     {
-      title: 'Station Management',
+      title: 'Fire Stations',
       path: '/stations',
       icon: 'mdi:fire-station',
       'authority': 'admin'
     },
     {
-      title: 'Vehicle Management',
+      title: 'Vehicles',
       path: '/vehicles',
       icon: 'tdesign:vehicle',
       'authority': 'admin'
     },
     {
-      title: 'Room Management',
+      title: 'Rooms',
       path: '/rooms',
       icon: 'fluent-mdl2:room',
       'authority': 'admin'
     },
     {
-      title: 'User Management',
+      title: 'Users',
       path: '/users',
       icon: 'mdi:human-queue',
       'authority': 'admin'

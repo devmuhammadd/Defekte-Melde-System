@@ -8,6 +8,7 @@ import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import { Icon } from '@iconify/react'
 import { Tooltip } from '@mui/material'
+import { capitalize } from 'src/utils/common'
 
 const UsersTable = ({ users, handleEditUser }) => {
     return (
@@ -37,7 +38,7 @@ const UsersTable = ({ users, handleEditUser }) => {
                                         {user?.fullName}
                                     </TableCell>
                                     <TableCell>{user?.station || 'Not Assigned Yet'}</TableCell>
-                                    <TableCell>{user?.role}</TableCell>
+                                    <TableCell>{user?.role === 'member' ? 'Not Assigned Yet' : capitalize(user?.role)}</TableCell>
                                     <TableCell sx={{ display: 'flex', gap: '10px' }}>
                                         <Tooltip title='Edit' placement='top'>
                                             <Icon icon="tabler:edit" width="24" height="24"
