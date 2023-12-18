@@ -1,9 +1,8 @@
 /**
  *  Set Home URL based on User Roles
  */
-const getHomeRoute = role => {
-  // if (role === 'client') return '/acl'
-  // else return '/dms'
+const getHomeRoute = (role, organization) => {
+  if (role === 'member' || !organization) return '/onboarding';
   return '/dms'
 }
 

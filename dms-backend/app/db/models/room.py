@@ -15,5 +15,7 @@ class Room(Base):
     def to_dict(self):
         return {
             'id': self.id,
-            'name': self.name
+            'name': self.name,
+            'station': self.station.name if self.station else '',
+            'station_id': self.station.id if self.station else '',
         }

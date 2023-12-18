@@ -41,7 +41,7 @@ const AuthProvider = ({ children }) => {
           })
           .then(async response => {
             setLoading(false)
-            setUser({ ...response.data, role: 'user' })
+            setUser({ ...response.data })
           })
           .catch(() => {
             localStorage.removeItem('userData')
@@ -67,8 +67,8 @@ const AuthProvider = ({ children }) => {
       .then(async response => {
         window.localStorage.setItem(authConfig.storageTokenKeyName, response.data.token.accessToken)
         const returnUrl = router.query.returnUrl
-        setUser({ ...response.data.user, role: 'user' })
-        window.localStorage.setItem('userData', JSON.stringify({ ...response.data.user, role: 'user' }))
+        setUser(response.data.user)
+        window.localStorage.setItem('userData', JSON.stringify(response.data.user))
         const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
         router.replace(redirectURL)
       })
@@ -83,8 +83,8 @@ const AuthProvider = ({ children }) => {
       .then(async response => {
         window.localStorage.setItem(authConfig.storageTokenKeyName, response.data.token.accessToken)
         const returnUrl = router.query.returnUrl
-        setUser({ ...response.data.user, role: 'user' })
-        window.localStorage.setItem('userData', JSON.stringify({ ...response.data.user, role: 'user' }))
+        setUser(response.data.user)
+        window.localStorage.setItem('userData', JSON.stringify(response.data.user))
         const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
         router.replace(redirectURL)
       })

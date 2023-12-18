@@ -1,6 +1,7 @@
 from pydantic import BaseModel, constr
 from pydantic import EmailStr
 from pydantic import Field
+from typing import Optional
 
 
 # properties required during user creation
@@ -11,18 +12,32 @@ class UserCreate(BaseModel):
     full_name: str = None
 
 
-class UserUpdate(BaseModel):
+class UserProfileUpdate(BaseModel):
     email: EmailStr
     username: constr(min_length=3, max_length=50)
     full_name: str = None
+
+
+class UserUpdate(BaseModel):
+    id: int
+    email: EmailStr
+    username: constr()
+    full_name: str
+    role: Optional[str]
+    organization_id: Optional[int]
+    station_id: Optional[int]
 
 
 class ShowUser(BaseModel):
     id: int
     email: EmailStr
     username: constr()
-    is_active: bool
     full_name: str
+    role: str
+    organization: Optional[str]
+    organization_id: Optional[int]
+    station: Optional[str]
+    station_id: Optional[int]
 
     class Config:
         from_attributes = True

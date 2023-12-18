@@ -1,8 +1,8 @@
 from app.db.base import Base
-from sqlalchemy import Boolean, Column, Integer, String
 from app.core.hashing import Hasher
-from app.schemas.user import PasswordUpdate, UserCreate, UserUpdate, ShowUser
-from sqlalchemy.orm import Session
+from app.schemas.user import PasswordUpdate, UserCreate, UserProfileUpdate, ShowUser
+from sqlalchemy.orm import Session, relationship
+from sqlalchemy import Boolean, Column, Integer, String, ForeignKey
 
 
 class User(Base):
@@ -15,11 +15,26 @@ class User(Base):
     is_superuser = Column(Boolean, default=False)
     is_active = Column(Boolean, default=True)
     full_name = Column(String, nullable=False)
+    role = Column(String)
+    organization_id = Column(Integer, ForeignKey('organizations.id'))
+    station_id = Column(Integer, ForeignKey('stations.id'))
+
+    organization = relationship("Organization", foreign_keys=[
+        organization_id], backref="organization")
+    station = relationship("Station", foreign_keys=[
+        station_id], backref="station")
 
     def to_dict(self):
         return {
             'id': self.id,
-            'name': self.full_name
+            'email': self.email,
+            'username': self.username,
+            'full_name': self.full_name,
+            'role': self.role or '',
+            'organization': self.organization.name if self.organization else None,
+            'organization_id': self.organization.id if self.organization else None,
+            'station': self.station.name if self.station else None,
+            'station_id': self.station.id if self.station else None,
         }
 
 
@@ -31,6 +46,7 @@ def create_new_user(user: UserCreate, db: Session):
         is_active=True,
         is_superuser=False,
         full_name=user.full_name,
+        role="member"
     )
     db.add(user)
     db.commit()
@@ -38,7 +54,7 @@ def create_new_user(user: UserCreate, db: Session):
     return user
 
 
-def update_user(user: ShowUser, user_payload: UserUpdate, db: Session):
+def update_user(user: ShowUser, user_payload: UserProfileUpdate, db: Session):
     for key, value in user_payload.dict(exclude_unset=True).items():
         setattr(user, key, value)
 
@@ -49,7 +65,7 @@ def update_user(user: ShowUser, user_payload: UserUpdate, db: Session):
 
 def get_user_by_username(username: str, db: Session):
     user = db.query(User).filter(User.username == username).first()
-    return user
+    return user if user else None
 
 
 def update_password(username: str, password_payload: PasswordUpdate, db: Session):
@@ -62,3 +78,9 @@ def update_password(username: str, password_payload: PasswordUpdate, db: Session
     db.commit()
     db.refresh(user)
     return True
+
+
+def get_station_chief_user(station_id: int, db: Session):
+    user = db.query(User).filter(
+        User.station_id == station_id and User.role == 'chief').first()
+    return user if user else None

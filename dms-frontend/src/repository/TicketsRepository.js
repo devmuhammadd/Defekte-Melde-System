@@ -7,4 +7,4 @@ export const createTicketApi = (params) => axios.post(ApiRoutes.TicketsUrl, para
 export const updateTicketApi = (params) => axios.put(ApiRoutes.TicketUrl(params.id), params).then(res => res);
 export const deleteTicketApi = (id) => axios.delete(ApiRoutes.TicketUrl(id)).then(res => res);
 export const getNewTicketData = () => axios.get(ApiRoutes.NewTicketDataUrl).then(res => res);
-export const getStationData = (id) => axios.get(ApiRoutes.StationDataUrl(id)).then(res => res);
+export const getStationData = (id) => axios.get(ApiRoutes.stationDataUrl(id)).then(res => res);

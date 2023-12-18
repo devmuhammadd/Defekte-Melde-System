@@ -10,7 +10,11 @@ import {
     PURGE,
     REGISTER,
 } from 'redux-persist';
-import TicketSlice from "./slices/TicketsSlice";
+import TicketSlice from "./slices/TicketSlice";
+import StationSlice from "./slices/StationSlice";
+import UserSlice from "./slices/UserSlice";
+import VehicleSlice from "./slices/VehicleSlice";
+import RoomSlice from "./slices/RoomSlice";
 
 const persistConfig = {
     key: 'counter',
@@ -18,7 +22,11 @@ const persistConfig = {
 };
 
 const reducers = combineReducers({
-    [TicketSlice.name]: TicketSlice.reducer
+    [TicketSlice.name]: TicketSlice.reducer,
+    [StationSlice.name]: StationSlice.reducer,
+    [UserSlice.name]: UserSlice.reducer,
+    [VehicleSlice.name]: VehicleSlice.reducer,
+    [RoomSlice.name]: RoomSlice.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, reducers);
