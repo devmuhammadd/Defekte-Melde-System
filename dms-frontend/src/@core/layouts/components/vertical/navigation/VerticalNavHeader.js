@@ -106,7 +106,7 @@ const VerticalNavHeader = props => {
             />
           </svg>
           <HeaderTitle variant='h4' sx={{ ...menuCollapsedStyles, ...(navCollapsed && !navHover ? {} : { ml: 2.5 }) }}>
-            {themeConfig.templateName}{user?.organization ? ` - ${user?.organization}` : ''}
+            {user?.organization ? user?.organization : themeConfig.templateName}
           </HeaderTitle>
         </LinkStyled>
       )}

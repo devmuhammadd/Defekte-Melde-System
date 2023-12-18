@@ -13,7 +13,7 @@ import * as yup from 'yup'
 import { Controller, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import toast from 'react-hot-toast'
-import { createOrganizationApi, getOrganizationApi } from 'src/repository/OrganizationsRepository';
+import { createOrganizationApi } from 'src/repository/OrganizationsRepository';
 import { useAuth } from 'src/hooks/useAuth'
 import { useRouter } from 'next/router'
 
@@ -23,7 +23,7 @@ const schema = yup.object().shape({
     postalCode: yup.string().required(),
 });
 
-const AddOrganizationForm = ({ organization }) => {
+const AddOrganizationForm = ({ setOrganization }) => {
     const { user, setUser } = useAuth();
     const router = useRouter();
 
@@ -35,7 +35,7 @@ const AddOrganizationForm = ({ organization }) => {
         mode: 'onBlur',
         resolver: yupResolver(schema),
         defaultValues: {
-            name: organization?.name || '',
+            name: '',
             cityName: '',
             postalCode: '',
         }
@@ -45,11 +45,16 @@ const AddOrganizationForm = ({ organization }) => {
         try {
             const params = data;
             createOrganizationApi(params).then((res) => {
-                setUser({ ...user, organization: res?.data?.organization, role: res?.data?.role });
+                if (res?.data?.orgExist) {
+                    setOrganization(res?.data?.organization);
+                    setUser({ ...user, organization: res?.data?.organization?.name });
+                } else {
+                    setUser({ ...user, organization: res?.data?.organization, role: res?.data?.role });
+                }
                 router.push('/');
             })
         } catch (err) {
-            toast.error("Unable to fetch organization!");
+            toast.error("Something went wrong!");
         }
     }
 

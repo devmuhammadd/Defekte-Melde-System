@@ -7,7 +7,6 @@ export default {
     StationDataUrl: id => `/stations/${id}`,
     //Organizations
     createOrganizationUrl: '/organizations',
-    getOrganizationByNameUrl: name => `/organizations/${name}`,
     //Users
     getUsersUrl: organizationId => `/users?organization_id=${organizationId}`,
     userUrl: id => `/users/${id}`,
