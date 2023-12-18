@@ -48,7 +48,6 @@ const RoleAssignmentForm = ({ title, onFormSubmit, user, successMessage }) => {
     const onSubmit = async data => {
         try {
             const params = { ...user, role: data?.role };
-            debugger;
 
             await onFormSubmit(params);
             router.push('/users');
