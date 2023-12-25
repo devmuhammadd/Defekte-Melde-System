@@ -2,7 +2,7 @@ from app.db.models.room import Room
 from app.db.models.vehicle import Vehicle
 from app.db.session import get_db
 from app.db.base import Base
-from sqlalchemy import Column, Integer, String, ForeignKey, func
+from sqlalchemy import Column, Integer, String, ForeignKey, func, Boolean
 from sqlalchemy.orm import relationship, Session
 
 
@@ -17,6 +17,7 @@ class Ticket(Base):
     location = Column(String)
     contact = Column(String)
     location_id = Column(Integer, nullable=False)
+    is_deleted = Column(Boolean, nullable=False)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     reporter_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     station_id = Column(Integer, ForeignKey('stations.id'), nullable=False)
@@ -63,6 +64,7 @@ def get_unique_status_counts(db: Session):
     try:
         status_counts = (
             db.query(Ticket.status, func.count(Ticket.status))
+            .filter(Ticket.is_deleted == False)
             .group_by(Ticket.status)
             .all()
         )

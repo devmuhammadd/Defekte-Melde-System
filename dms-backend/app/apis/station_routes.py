@@ -36,13 +36,7 @@ def create_station(station_data: StationCreate, current_user: ShowUser = Depends
     db.add(new_station)
     db.commit()
     db.refresh(new_station)
-    chief_user = db.query(User).filter(
-        User.id == station_data.chief_id).first()
-    if chief_user:
-        chief_user.role = 'chief'
-        chief_user.station_id = new_station.id
-        db.commit()
-        db.refresh(chief_user)
+
     return new_station.to_dict()
 
 

@@ -2,33 +2,33 @@ const navigation = () => {
   return [
     {
       title: 'Tickets',
-      path: '/dms',
+      path: '/tickets',
       icon: 'ion:ticket-outline',
-      'authority': 'everyone'
+      'authority': 'Everyone'
     },
     {
       title: 'Fire Stations',
       path: '/stations',
       icon: 'mdi:fire-station',
-      'authority': 'admin'
+      'authority': 'Admin'
     },
     {
       title: 'Vehicles',
       path: '/vehicles',
       icon: 'tdesign:vehicle',
-      'authority': 'admin'
+      'authority': 'Admin'
     },
     {
       title: 'Rooms',
       path: '/rooms',
       icon: 'fluent-mdl2:room',
-      'authority': 'admin'
+      'authority': 'Admin'
     },
     {
       title: 'Users',
       path: '/users',
       icon: 'mdi:human-queue',
-      'authority': 'admin'
+      'authority': 'Admin'
     },
     // {
     //   title: 'Personalverwaltung',

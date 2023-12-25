@@ -16,7 +16,7 @@ const Dashboard = () => {
     const { rooms, loading, deleteRoom, getRooms } = useRoom();
 
     useEffect(() => {
-        if (user?.role !== 'admin') router.push('/');
+        if (user?.role !== 'Admin') router.push('/');
         getRooms(user?.organizationId);
     }, []);
 
@@ -40,7 +40,7 @@ const Dashboard = () => {
         router.push(`/rooms?roomId=${roomId}`);
     }
 
-    if (loading || user?.role !== 'admin') {
+    if (loading || user?.role !== 'Admin') {
         return (
             <Grid item xs={12}>
                 <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column', justifyContent: 'center' }}>

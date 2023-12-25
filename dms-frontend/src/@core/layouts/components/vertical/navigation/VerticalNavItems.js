@@ -17,7 +17,7 @@ const VerticalNavItems = props => {
   const { user } = useAuth();
   console.log('user', user);
 
-  const filteredNavItems = verticalNavItems?.filter(item => user?.role !== 'member' && (item.authority === 'everyone' || item.authority === user?.role));
+  const filteredNavItems = verticalNavItems?.filter(item => user?.role !== 'Member' && (item.authority === 'everyone' || item.authority === user?.role));
   const RenderMenuItems = filteredNavItems?.map((item, index) => {
     const TagName = resolveNavItemComponent(item)
 

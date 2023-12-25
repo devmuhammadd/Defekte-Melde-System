@@ -1,13 +1,8 @@
-// ** React Imports
-import { useEffect, useState } from 'react'
-
 // ** MUI Imports
-import { Radio, RadioGroup, FormControlLabel, Typography } from '@mui/material';
 import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
-import MenuItem from '@mui/material/MenuItem'
 import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 import CardActions from '@mui/material/CardActions'
@@ -24,19 +19,11 @@ import { useUser } from 'src/hooks';
 
 const schema = yup.object().shape({
     name: yup.string().required(),
-    chiefId: yup.string().required(),
 });
 
 const StationForm = ({ title, onFormSubmit, station, successMessage }) => {
     const router = useRouter();
-    const { users, getUsers } = useUser();
     const { user } = useAuth();
-    const [organizationUsers, setOrganizationUsers] = useState();
-
-    useEffect(() => {
-        getUsers(user?.organizationId);
-        setOrganizationUsers(users.filter(u => u?.id !== user?.id));
-    }, []);
 
     const {
         control,
@@ -47,7 +34,6 @@ const StationForm = ({ title, onFormSubmit, station, successMessage }) => {
         resolver: yupResolver(schema),
         defaultValues: {
             name: station?.name || '',
-            chiefId: station?.chiefId || '',
         }
     })
 
@@ -93,30 +79,6 @@ const StationForm = ({ title, onFormSubmit, station, successMessage }) => {
                                         error={Boolean(errors.name)}
                                         {...(errors.name && { helperText: errors.name.message })}
                                     />
-                                )}
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <Controller
-                                name='chiefId'
-                                control={control}
-                                rules={{ required: true }}
-                                render={({ field: { value, onChange, onBlur } }) => (
-                                    <CustomTextField
-                                        select
-                                        fullWidth
-                                        label='Chief'
-                                        value={value}
-                                        defaultValue=''
-                                        onBlur={onBlur}
-                                        onChange={onChange}
-                                        error={Boolean(errors.chiefId)}
-                                        {...(errors.chiefId && { helperText: errors.chiefId.message })}
-                                    >
-                                        {organizationUsers?.map((user) =>
-                                            <MenuItem key={`user#${user?.id}`} value={user?.id}>{user?.fullName}</MenuItem>
-                                        )}
-                                    </CustomTextField>
                                 )}
                             />
                         </Grid>

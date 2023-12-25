@@ -38,21 +38,25 @@ const UsersTable = ({ users, handleEditUser }) => {
                                         {user?.fullName}
                                     </TableCell>
                                     <TableCell>{user?.station || 'Not Assigned Yet'}</TableCell>
-                                    <TableCell>{user?.role === 'member' ? 'Not Assigned Yet' : capitalize(user?.role)}</TableCell>
+                                    <TableCell>{user?.role === 'Member' ? 'Not Assigned Yet' : user?.role}</TableCell>
                                     <TableCell sx={{ display: 'flex', gap: '10px' }}>
-                                        <Tooltip title='Edit' placement='top'>
-                                            <Icon icon="tabler:edit" width="24" height="24"
-                                                style={{ cursor: 'pointer' }}
-                                                onClick={() => handleEditUser(user?.id)}
-                                            />
-                                        </Tooltip>
+                                        {user?.role === 'Member' ?
+                                            <Tooltip title='Update Role' placement='top'>
+                                                <Icon icon="eos-icons:role-binding-outlined" width="24" height="24"
+                                                    style={{ cursor: 'pointer' }}
+                                                    onClick={() => handleEditUser(user?.id)}
+                                                />
+                                            </Tooltip>
+                                            : <Tooltip title='Role Assigned' placement='top'>
+                                                <Icon icon="fluent-mdl2:completed-solid" width="24" height="24" color='green' />
+                                            </Tooltip>}
                                     </TableCell>
                                 </TableRow>
                             )
                         })
                         :
                         <TableRow>
-                            <TableCell colSpan={6}>No users found</TableCell>
+                            <TableCell colSpan={5} sx={{ textAlign: 'center' }}>No users found!</TableCell>
                         </TableRow>
                     }
                 </TableBody>

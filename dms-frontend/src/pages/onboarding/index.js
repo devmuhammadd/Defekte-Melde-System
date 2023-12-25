@@ -10,12 +10,12 @@ function index() {
     const [organization, setOrganization] = useState();
 
     useEffect(() => {
-        if (user?.organization && user?.role !== 'member') {
+        if (user?.organization && user?.role !== 'Member') {
             router.push('/');
         }
     }, [])
 
-    if (user?.organization && user?.role === 'member') {
+    if (user?.organization && user?.role === 'Member') {
         return <OnboardingInProgressCard organization={organization} />
     } else {
         return <AddOrganizationForm setOrganization={setOrganization} />

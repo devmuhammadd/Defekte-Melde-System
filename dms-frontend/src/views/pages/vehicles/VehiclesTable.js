@@ -55,7 +55,7 @@ const VehiclesTable = ({ vehicles, handleDeleteVehicle, handleEditVehicle }) => 
                         })
                         :
                         <TableRow>
-                            <TableCell colSpan={6}>No vehicles found</TableCell>
+                            <TableCell colSpan={4} sx={{ textAlign: 'center' }}>No vehicles found!</TableCell>
                         </TableRow>
                     }
                 </TableBody>

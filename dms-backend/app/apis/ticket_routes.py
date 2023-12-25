@@ -16,7 +16,8 @@ router = APIRouter(prefix="/tickets")
 
 @router.get("/", response_model=List[ShowTicket], status_code=status.HTTP_200_OK)
 def get_all_tickets(current_user: ShowUser = Depends(authenticate_user_token), db: Session = Depends(get_db)):
-    tickets = db.query(Ticket).order_by(Ticket.id).all()
+    tickets = db.query(Ticket).filter(
+        Ticket.is_deleted == False).order_by(Ticket.id).all()
     return [ticket.to_dict() for ticket in tickets]
 
 
@@ -54,12 +55,3 @@ def update_ticket(ticket_id: int, ticket_data: TicketUpdate, current_user: ShowU
     db.commit()
     db.refresh(ticket)
     return ticket.to_dict()
-
-
-@router.delete("/{ticket_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_ticket(ticket_id: int, current_user: ShowUser = Depends(authenticate_user_token), db: Session = Depends(get_db)):
-    ticket = db.query(Ticket).filter(Ticket.id == ticket_id).first()
-    if not ticket:
-        raise HTTPException(status_code=404, detail="Ticket not found")
-    db.delete(ticket)
-    db.commit()

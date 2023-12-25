@@ -20,14 +20,11 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { useRouter } from 'next/router'
 import toast from 'react-hot-toast'
 
-const roles = [
-    { id: 'mechanic', name: 'Mechanic' },
-    { id: 'driver', name: 'Driver' },
-    { id: 'chief', name: 'Chief' }
-]
+const roles = ['Public Administrator', 'Chief Mechanic', 'Chief', 'Mechanic', 'Reporter'];
 
 const schema = yup.object().shape({
-    role: yup.string().required()
+    role: yup.string().required(),
+    stationId: yup.string().required()
 });
 
 const RoleAssignmentForm = ({ title, onFormSubmit, user, successMessage }) => {
@@ -42,6 +39,7 @@ const RoleAssignmentForm = ({ title, onFormSubmit, user, successMessage }) => {
         resolver: yupResolver(schema),
         defaultValues: {
             role: user?.role || '',
+            stationId: ''
         }
     })
 
@@ -67,29 +65,57 @@ const RoleAssignmentForm = ({ title, onFormSubmit, user, successMessage }) => {
             <Divider sx={{ m: '0 !important' }} />
             <form onSubmit={handleSubmit(onSubmit)}>
                 <CardContent>
-                    <Grid item xs={12} sm={6}>
-                        <Controller
-                            name='role'
-                            control={control}
-                            rules={{ required: true }}
-                            render={({ field: { value, onChange, onBlur } }) => (
-                                <CustomTextField
-                                    select
-                                    fullWidth
-                                    label='Role'
-                                    value={value}
-                                    defaultValue=''
-                                    onBlur={onBlur}
-                                    onChange={onChange}
-                                    error={Boolean(errors.role)}
-                                    {...(errors.role && { helperText: errors.role.message })}
-                                >
-                                    {roles?.map((role) =>
-                                        <MenuItem key={`role#${role?.id}`} value={role?.id}>{role?.name}</MenuItem>
-                                    )}
-                                </CustomTextField>
-                            )}
-                        />
+                    <Grid container spacing={6}>
+                        <Grid item xs={12} sm={6}>
+                            <Controller
+                                name='role'
+                                control={control}
+                                rules={{ required: true }}
+                                render={({ field: { value, onChange, onBlur } }) => (
+                                    <CustomTextField
+                                        select
+                                        fullWidth
+                                        label='Role'
+                                        value={value}
+                                        defaultValue=''
+                                        onBlur={onBlur}
+                                        onChange={onChange}
+                                        error={Boolean(errors.role)}
+                                        {...(errors.role && { helperText: errors.role.message })}
+                                    >
+                                        {roles?.map((role) =>
+                                            <MenuItem key={`role#${role}`} value={role}>{role}</MenuItem>
+                                        )}
+                                    </CustomTextField>
+                                )}
+                            />
+                        </Grid>
+                    </Grid>
+                    <Grid container spacing={6}>
+                        <Grid item xs={12} sm={6}>
+                            <Controller
+                                name='role'
+                                control={control}
+                                rules={{ required: true }}
+                                render={({ field: { value, onChange, onBlur } }) => (
+                                    <CustomTextField
+                                        select
+                                        fullWidth
+                                        label='Role'
+                                        value={value}
+                                        defaultValue=''
+                                        onBlur={onBlur}
+                                        onChange={onChange}
+                                        error={Boolean(errors.role)}
+                                        {...(errors.role && { helperText: errors.role.message })}
+                                    >
+                                        {roles?.map((role) =>
+                                            <MenuItem key={`role#${role}`} value={role}>{role}</MenuItem>
+                                        )}
+                                    </CustomTextField>
+                                )}
+                            />
+                        </Grid>
                     </Grid>
                 </CardContent>
                 <Divider sx={{ m: '0 !important' }} />

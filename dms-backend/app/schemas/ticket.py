@@ -12,6 +12,7 @@ class TicketBase(BaseModel):
     user_id: int
     reporter_id: int
     station_id: int
+    is_deleted: bool
 
 
 class TicketCreate(TicketBase):
@@ -38,6 +39,7 @@ class ShowTicket(BaseModel):
     user_id: int
     reporter: str
     reporter_id: int
+    is_deleted: bool
 
     class Config:
         from_attributes = True

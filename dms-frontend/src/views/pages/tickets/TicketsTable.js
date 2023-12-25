@@ -103,7 +103,7 @@ const TicketsTable = ({ tickets, handleDeleteTicket, handleEditTicket, handleTic
                         })
                         :
                         <TableRow>
-                            <TableCell colSpan={6}>No tickets found</TableCell>
+                            <TableCell colSpan={7} sx={{ textAlign: 'center' }}>No tickets found!</TableCell>
                         </TableRow>
                     }
                 </TableBody>

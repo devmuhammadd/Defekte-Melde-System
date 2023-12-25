@@ -5,7 +5,7 @@ from app.db.session import get_db
 from fastapi import APIRouter, HTTPException, Query
 from fastapi import Depends
 from fastapi import status
-from app.schemas.user import PasswordUpdate, ShowUser, UserCreate, UserLogin, UserProfileUpdate, UserUpdate
+from app.schemas.user import PasswordUpdate, ShowUser, UserCreate, UserLogin, UserProfileUpdate, UserRoleUpdate
 from app.schemas.user_token import UserToken
 from sqlalchemy.orm import Session
 
@@ -76,13 +76,27 @@ def get_all_users(
     return [user.to_dict() for user in users]
 
 
-@router.put("/users/{user_id}", response_model=ShowUser, status_code=status.HTTP_200_OK)
-def update_user(user_id: int, user_data: UserUpdate, current_user: ShowUser = Depends(authenticate_user_token), db: Session = Depends(get_db)):
+@router.put("/users/{user_id}/role", response_model=ShowUser, status_code=status.HTTP_200_OK)
+def update_user_role(user_id: int, user_data: UserRoleUpdate, current_user: ShowUser = Depends(authenticate_user_token), db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    for key, value in user_data.model_dump().items():
-        setattr(user, key, value)
+        raise HTTPException(status_code=404, detail="User not found!")
+    if user_data.station_id:
+        is_role_exist = db.query(User).filter(
+            User.station_id == user_data.station_id and User.role == user_data.role and User.id != user_id).first()
+        error_message = f"{user_data.role} role already exist in the stations!"
+    else:
+        is_role_exist = db.query(User).filter(
+            User.role == user_data.role and User.id != user_id).first()
+        error_message = f"{user_data.role} role already exist in the organization!"
+
+    if is_role_exist:
+        raise HTTPException(
+            status_code=404, detail=error_message)
+
+    user.role = user_data.role
+    user.station_id = user_data.station_id or None
+
     db.commit()
     db.refresh(user)
     return user.to_dict()

@@ -55,7 +55,7 @@ const StationsTable = ({ stations, handleDeleteStation, handleEditStation }) => 
                         })
                         :
                         <TableRow>
-                            <TableCell colSpan={6}>No stations found</TableCell>
+                            <TableCell colSpan={4} sx={{ textAlign: 'center' }}>No stations found!</TableCell>
                         </TableRow>
                     }
                 </TableBody>

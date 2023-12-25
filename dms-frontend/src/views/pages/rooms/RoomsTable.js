@@ -55,7 +55,7 @@ const RoomsTable = ({ rooms, handleDeleteRoom, handleEditRoom }) => {
                         })
                         :
                         <TableRow>
-                            <TableCell colSpan={6}>No rooms found</TableCell>
+                            <TableCell colSpan={4} sx={{ textAlign: 'center' }}>No rooms found!</TableCell>
                         </TableRow>
                     }
                 </TableBody>

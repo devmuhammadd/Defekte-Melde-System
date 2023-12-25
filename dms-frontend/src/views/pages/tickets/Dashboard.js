@@ -1,11 +1,11 @@
 // ** MUI Imports
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
-import CardStatisticsSquare from 'src/views/pages/dms/CardStatisticsSquare'
+import CardStatisticsSquare from 'src/views/pages/tickets/CardStatisticsSquare'
 import { useTicket } from 'src/hooks'
 import { useEffect, useState } from 'react'
 import { Box, Button, CircularProgress } from '@mui/material'
-import CriticalTickets from 'src/views/pages/dms/CriticalTickets'
+import CriticalTickets from 'src/views/pages/tickets/CriticalTickets'
 import { calculateTicketStats } from 'src/utils/ticketUtils'
 import Icon from 'src/@core/components/icon'
 import { useRouter } from 'next/router'
@@ -37,7 +37,7 @@ const Dashboard = () => {
         const response = confirm(`Are you sure you want to delete the ${ticket?.title} ticket?`)
         if (response) {
             try {
-                await deleteTicket(ticket?.id);
+                await deleteTicket({ ...ticket, isDeleted: true });
                 toast.success("Ticket deleted successfully!");
             } catch (err) {
                 toast.error("Unable to delete a ticket!");

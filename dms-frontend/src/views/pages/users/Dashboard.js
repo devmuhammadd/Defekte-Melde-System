@@ -15,7 +15,7 @@ const Dashboard = () => {
     const [organizationUsers, setOrganizationUsers] = useState();
 
     useEffect(() => {
-        if (user?.role !== 'admin') router.push('/');
+        if (user?.role !== 'Admin') router.push('/');
         getUsers(user?.organizationId);
     }, []);
 
@@ -28,7 +28,7 @@ const Dashboard = () => {
         router.push(`/users?userId=${userId}`);
     }
 
-    if (loading || user?.role !== 'admin' || organizationUsers?.length === 0) {
+    if (loading || user?.role !== 'Admin' || organizationUsers?.length === 0) {
         return (
             <Grid item xs={12}>
                 <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column', justifyContent: 'center' }}>

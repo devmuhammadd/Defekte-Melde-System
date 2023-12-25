@@ -4,7 +4,6 @@ from pydantic import BaseModel
 class StationBase(BaseModel):
     name: str
     organization_id: int
-    chief_id: int
 
 
 class StationCreate(StationBase):

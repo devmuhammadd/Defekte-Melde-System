@@ -24,7 +24,7 @@ function UpdateUserRole({ userId }) {
 
     return (
         <RoleAssignmentForm
-            title={`Assign User Role - ${user?.fullName}`}
+            title={`Update User Role - ${user?.fullName}`}
             onFormSubmit={updateUser}
             user={user}
             successMessage="Role assigned successfully!"
