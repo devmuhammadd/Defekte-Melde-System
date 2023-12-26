@@ -4,31 +4,31 @@ const navigation = () => {
       title: 'Tickets',
       path: '/tickets',
       icon: 'ion:ticket-outline',
-      'authority': 'Everyone'
+      'authority': ['Public Administrator', 'Chief Mechanic', 'Chief', 'Mechanic', 'Reporter']
     },
     {
       title: 'Fire Stations',
       path: '/stations',
       icon: 'mdi:fire-station',
-      'authority': 'Admin'
+      'authority': ['Admin', 'Public Administrator']
     },
     {
       title: 'Vehicles',
       path: '/vehicles',
       icon: 'tdesign:vehicle',
-      'authority': 'Admin'
+      'authority': ['Admin', 'Chief Mechanic', 'Chief', 'Public Administrator']
     },
     {
       title: 'Rooms',
       path: '/rooms',
       icon: 'fluent-mdl2:room',
-      'authority': 'Admin'
+      'authority': ['Admin', 'Chief Mechanic', 'Chief', 'Public Administrator']
     },
     {
       title: 'Users',
       path: '/users',
       icon: 'mdi:human-queue',
-      'authority': 'Admin'
+      'authority': ['Admin']
     },
     // {
     //   title: 'Personalverwaltung',

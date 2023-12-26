@@ -2,7 +2,6 @@
 import { useEffect, useState } from 'react'
 
 // ** MUI Imports
-import { Radio, RadioGroup, FormControlLabel, Typography } from '@mui/material';
 import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
@@ -19,16 +18,38 @@ import { Controller, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useRouter } from 'next/router'
 import toast from 'react-hot-toast'
-
-const roles = ['Public Administrator', 'Chief Mechanic', 'Chief', 'Mechanic', 'Reporter'];
+import { getAvailableStations } from 'src/repository/OrganizationsRepository'
+import { adminRoles } from 'src/utils/roleUtils'
+import { useAuth } from 'src/hooks/useAuth'
 
 const schema = yup.object().shape({
     role: yup.string().required(),
-    stationId: yup.string().required()
+    stationId: yup.string()
 });
 
-const RoleAssignmentForm = ({ title, onFormSubmit, user, successMessage }) => {
+const RoleAssignmentForm = (props) => {
+    const { title, onFormSubmit, user, successMessage, roles, organizationId } = props;
     const router = useRouter();
+    const [selectedRole, setSelectedRole] = useState();
+    const [stations, setStations] = useState();
+    const auth = useAuth();
+
+    useEffect(() => {
+        if (!adminRoles.includes(auth?.user?.role)) router.push('/');
+    }, []);
+
+    const handleRoleChange = (role) => {
+        setSelectedRole(role);
+        if (!['Public Administrator', 'Chief Mechanic'].includes(role)) {
+            getAvailableStations(organizationId, role)
+                .then((res) => {
+                    setStations(res?.data);
+                })
+                .catch((err) => {
+                    toast.error('Unable to fetch stations!');
+                })
+        }
+    }
 
     const {
         control,
@@ -39,24 +60,32 @@ const RoleAssignmentForm = ({ title, onFormSubmit, user, successMessage }) => {
         resolver: yupResolver(schema),
         defaultValues: {
             role: user?.role || '',
-            stationId: ''
+            stationId: user?.stationId || ''
         }
     })
 
     const onSubmit = async data => {
         try {
-            const params = { ...user, role: data?.role };
+            if (!['Public Administrator', 'Chief Mechanic'].includes(selectedRole) && !data?.stationId) {
+                toast.error('Please select station!');
+                return;
+            }
+            const params = { ...user, role: data?.role, stationId: data?.stationId };
 
             await onFormSubmit(params);
             router.push('/users');
             toast.success(successMessage);
         } catch (err) {
-            toast.error("Unable to proceed!");
+            toast.error(err?.response?.data?.detail || 'Unable to proceed!');
         }
     }
 
     const handleCancel = () => {
         router.push('/users');
+    }
+
+    const showStationField = () => {
+        return selectedRole && !['Public Administrator', 'Chief Mechanic'].includes(selectedRole)
     }
 
     return (
@@ -79,7 +108,10 @@ const RoleAssignmentForm = ({ title, onFormSubmit, user, successMessage }) => {
                                         value={value}
                                         defaultValue=''
                                         onBlur={onBlur}
-                                        onChange={onChange}
+                                        onChange={(e) => {
+                                            handleRoleChange(e.target.value);
+                                            onChange(e);
+                                        }}
                                         error={Boolean(errors.role)}
                                         {...(errors.role && { helperText: errors.role.message })}
                                     >
@@ -90,32 +122,32 @@ const RoleAssignmentForm = ({ title, onFormSubmit, user, successMessage }) => {
                                 )}
                             />
                         </Grid>
-                    </Grid>
-                    <Grid container spacing={6}>
-                        <Grid item xs={12} sm={6}>
-                            <Controller
-                                name='role'
-                                control={control}
-                                rules={{ required: true }}
-                                render={({ field: { value, onChange, onBlur } }) => (
-                                    <CustomTextField
-                                        select
-                                        fullWidth
-                                        label='Role'
-                                        value={value}
-                                        defaultValue=''
-                                        onBlur={onBlur}
-                                        onChange={onChange}
-                                        error={Boolean(errors.role)}
-                                        {...(errors.role && { helperText: errors.role.message })}
-                                    >
-                                        {roles?.map((role) =>
-                                            <MenuItem key={`role#${role}`} value={role}>{role}</MenuItem>
-                                        )}
-                                    </CustomTextField>
-                                )}
-                            />
-                        </Grid>
+                        {showStationField() &&
+                            <Grid item xs={12} sm={6}>
+                                <Controller
+                                    name='stationId'
+                                    control={control}
+                                    rules={{ required: true }}
+                                    render={({ field: { value, onChange, onBlur } }) => (
+                                        <CustomTextField
+                                            select
+                                            fullWidth
+                                            label='Station'
+                                            value={value}
+                                            defaultValue=''
+                                            onBlur={onBlur}
+                                            onChange={onChange}
+                                            error={Boolean(errors.stationId)}
+                                            {...(errors.stationId && { helperText: errors.stationId.message })}
+                                        >
+                                            {stations?.map((station) =>
+                                                <MenuItem key={`station#${station?.id}`} value={station?.id}>{station?.name}</MenuItem>
+                                            )}
+                                        </CustomTextField>
+                                    )}
+                                />
+                            </Grid>
+                        }
                     </Grid>
                 </CardContent>
                 <Divider sx={{ m: '0 !important' }} />

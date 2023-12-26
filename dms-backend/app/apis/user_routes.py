@@ -79,24 +79,33 @@ def get_all_users(
 @router.put("/users/{user_id}/role", response_model=ShowUser, status_code=status.HTTP_200_OK)
 def update_user_role(user_id: int, user_data: UserRoleUpdate, current_user: ShowUser = Depends(authenticate_user_token), db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
+
     if not user:
         raise HTTPException(status_code=404, detail="User not found!")
+
+    existing_user_query = db.query(User).filter(User.id != user_id)
+
     if user_data.station_id:
-        is_role_exist = db.query(User).filter(
-            User.station_id == user_data.station_id and User.role == user_data.role and User.id != user_id).first()
-        error_message = f"{user_data.role} role already exist in the stations!"
+        existing_user_query = existing_user_query.filter(
+            User.station_id == user_data.station_id,
+            User.role == user_data.role
+        )
+        error_message = f"{user_data.role} role already exists in the station!"
     else:
-        is_role_exist = db.query(User).filter(
-            User.role == user_data.role and User.id != user_id).first()
-        error_message = f"{user_data.role} role already exist in the organization!"
+        existing_user_query = existing_user_query.filter(
+            User.role == user_data.role
+        )
+        error_message = f"{user_data.role} role already exists in the organization!"
+
+    is_role_exist = existing_user_query.first()
 
     if is_role_exist:
-        raise HTTPException(
-            status_code=404, detail=error_message)
+        raise HTTPException(status_code=404, detail=error_message)
 
     user.role = user_data.role
     user.station_id = user_data.station_id or None
 
     db.commit()
     db.refresh(user)
+
     return user.to_dict()

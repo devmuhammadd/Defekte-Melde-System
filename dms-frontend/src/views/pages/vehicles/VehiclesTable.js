@@ -8,8 +8,12 @@ import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import { Icon } from '@iconify/react'
 import { Tooltip } from '@mui/material'
+import { useAuth } from 'src/hooks/useAuth'
+import { viewOnlyRoles } from 'src/utils/roleUtils'
 
 const VehiclesTable = ({ vehicles, handleDeleteVehicle, handleEditVehicle }) => {
+    const { user } = useAuth();
+
     return (
         <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650 }} aria-label='simple table'>
@@ -17,7 +21,7 @@ const VehiclesTable = ({ vehicles, handleDeleteVehicle, handleEditVehicle }) => 
                     <TableRow>
                         <TableCell>Name</TableCell>
                         <TableCell>Station</TableCell>
-                        <TableCell>Actions</TableCell>
+                        {!viewOnlyRoles.includes(user?.role) && <TableCell>Actions</TableCell>}
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -36,20 +40,22 @@ const VehiclesTable = ({ vehicles, handleDeleteVehicle, handleEditVehicle }) => 
                                         {vehicle?.name}
                                     </TableCell>
                                     <TableCell>{vehicle?.station}</TableCell>
-                                    <TableCell sx={{ display: 'flex', gap: '10px' }}>
-                                        <Tooltip title='Edit' placement='top'>
-                                            <Icon icon="tabler:edit" width="24" height="24"
-                                                style={{ cursor: 'pointer' }}
-                                                onClick={() => handleEditVehicle(vehicle?.id)}
-                                            />
-                                        </Tooltip>
-                                        <Tooltip title='Delete' placement='top'>
-                                            <Icon icon="material-symbols:delete-outline" width="24" height="24"
-                                                style={{ cursor: 'pointer' }}
-                                                onClick={() => handleDeleteVehicle(vehicle)}
-                                            />
-                                        </Tooltip>
-                                    </TableCell>
+                                    {!viewOnlyRoles.includes(user?.role) &&
+                                        <TableCell sx={{ display: 'flex', gap: '10px' }}>
+                                            <Tooltip title='Edit' placement='top'>
+                                                <Icon icon="tabler:edit" width="24" height="24"
+                                                    style={{ cursor: 'pointer' }}
+                                                    onClick={() => handleEditVehicle(vehicle?.id)}
+                                                />
+                                            </Tooltip>
+                                            <Tooltip title='Delete' placement='top'>
+                                                <Icon icon="material-symbols:delete-outline" width="24" height="24"
+                                                    style={{ cursor: 'pointer' }}
+                                                    onClick={() => handleDeleteVehicle(vehicle)}
+                                                />
+                                            </Tooltip>
+                                        </TableCell>
+                                    }
                                 </TableRow>
                             )
                         })

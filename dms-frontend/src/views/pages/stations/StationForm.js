@@ -15,7 +15,8 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { useRouter } from 'next/router'
 import { useAuth } from 'src/hooks/useAuth'
 import toast from 'react-hot-toast'
-import { useUser } from 'src/hooks';
+import { adminRoles } from 'src/utils/roleUtils'
+import { useEffect } from 'react'
 
 const schema = yup.object().shape({
     name: yup.string().required(),
@@ -24,6 +25,10 @@ const schema = yup.object().shape({
 const StationForm = ({ title, onFormSubmit, station, successMessage }) => {
     const router = useRouter();
     const { user } = useAuth();
+
+    useEffect(() => {
+        if (!adminRoles.includes(user?.role)) router.push('/');
+    }, []);
 
     const {
         control,

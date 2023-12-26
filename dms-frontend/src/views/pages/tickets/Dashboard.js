@@ -11,9 +11,12 @@ import Icon from 'src/@core/components/icon'
 import { useRouter } from 'next/router'
 import TicketsTable from './TicketsTable'
 import toast from 'react-hot-toast'
+import { ticketCreateRoles } from 'src/utils/roleUtils'
+import { useAuth } from 'src/hooks/useAuth'
 
 const Dashboard = () => {
     const router = useRouter();
+    const { user } = useAuth();
     const { tickets, ticketStats, loading, loadDmsData, deleteTicket, completeTicket } = useTicket();
     const [criticalTickets, setCriticalTickets] = useState();
     const [otherTickets, setOtherTickets] = useState();
@@ -30,7 +33,7 @@ const Dashboard = () => {
     }, [tickets])
 
     const handleNewTicketClick = () => {
-        router.push('/dms?newTicket=true');
+        router.push('/tickets?newTicket=true');
     }
 
     const handleDeleteTicket = async (ticket) => {
@@ -46,7 +49,7 @@ const Dashboard = () => {
     }
 
     const handleEditTicket = (ticketId) => {
-        router.push(`/dms?ticketId=${ticketId}`);
+        router.push(`/tickets?ticketId=${ticketId}`);
     }
 
     const handleTicketStatusChange = async (ticket, status) => {
@@ -77,14 +80,16 @@ const Dashboard = () => {
             <Grid item xs={12}>
                 <CardStatisticsSquare data={calculateTicketStats(ticketStats)} />
             </Grid>
-            <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <Button variant='contained' color='primary'
-                    endIcon={<Icon icon='ic:baseline-plus' />}
-                    onClick={handleNewTicketClick}
-                >
-                    New Ticket
-                </Button>
-            </Grid>
+            {ticketCreateRoles.includes(user?.role) &&
+                <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <Button variant='contained' color='primary'
+                        endIcon={<Icon icon='ic:baseline-plus' />}
+                        onClick={handleNewTicketClick}
+                    >
+                        New Ticket
+                    </Button>
+                </Grid>
+            }
             <Grid item xs={12}>
                 <CriticalTickets
                     tickets={criticalTickets}

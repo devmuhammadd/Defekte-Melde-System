@@ -19,11 +19,18 @@ router = APIRouter(prefix="/stations")
 def get_all_stations(
     organization_id: int = Query(...,
                                  description="Organization ID to filter stations"),
+    station_id: int = Query(...,
+                            description="Station ID to filter rooms"),
     current_user: ShowUser = Depends(authenticate_user_token),
     db: Session = Depends(get_db)
 ):
-    stations = db.query(Station).filter(
-        Station.organization_id == organization_id).order_by(Station.id).all()
+    query = db.query(Station).filter(
+        Station.organization_id == organization_id)
+
+    if station_id is not -1:
+        query = query.filter(Station.id == station_id)
+
+    stations = query.order_by(Station.id).all()
 
     return [station.to_dict() for station in stations]
 

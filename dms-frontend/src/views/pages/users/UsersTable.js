@@ -8,18 +8,21 @@ import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import { Icon } from '@iconify/react'
 import { Tooltip } from '@mui/material'
-import { capitalize } from 'src/utils/common'
+import { useAuth } from 'src/hooks/useAuth'
+import { viewOnlyRoles } from 'src/utils/roleUtils'
 
 const UsersTable = ({ users, handleEditUser }) => {
+    const auth = useAuth();
+
     return (
         <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650 }} aria-label='simple table'>
                 <TableHead>
                     <TableRow>
                         <TableCell>Name</TableCell>
-                        <TableCell>Station</TableCell>
                         <TableCell>Role</TableCell>
-                        <TableCell>Actions</TableCell>
+                        <TableCell>Station</TableCell>
+                        {!viewOnlyRoles.includes(auth?.user?.role) && <TableCell>Actions</TableCell>}
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -37,20 +40,22 @@ const UsersTable = ({ users, handleEditUser }) => {
                                     <TableCell component='th' scope='row'>
                                         {user?.fullName}
                                     </TableCell>
-                                    <TableCell>{user?.station || 'Not Assigned Yet'}</TableCell>
                                     <TableCell>{user?.role === 'Member' ? 'Not Assigned Yet' : user?.role}</TableCell>
-                                    <TableCell sx={{ display: 'flex', gap: '10px' }}>
-                                        {user?.role === 'Member' ?
-                                            <Tooltip title='Update Role' placement='top'>
-                                                <Icon icon="eos-icons:role-binding-outlined" width="24" height="24"
-                                                    style={{ cursor: 'pointer' }}
-                                                    onClick={() => handleEditUser(user?.id)}
-                                                />
-                                            </Tooltip>
-                                            : <Tooltip title='Role Assigned' placement='top'>
-                                                <Icon icon="fluent-mdl2:completed-solid" width="24" height="24" color='green' />
-                                            </Tooltip>}
-                                    </TableCell>
+                                    <TableCell>{user?.station}</TableCell>
+                                    {!viewOnlyRoles.includes(auth?.user?.role) &&
+                                        <TableCell sx={{ display: 'flex', gap: '10px' }}>
+                                            {user?.role === 'Member' ?
+                                                <Tooltip title='Update Role' placement='top'>
+                                                    <Icon icon="eos-icons:role-binding-outlined" width="24" height="24"
+                                                        style={{ cursor: 'pointer' }}
+                                                        onClick={() => handleEditUser(user?.id)}
+                                                    />
+                                                </Tooltip>
+                                                : <Tooltip title='Role Assigned' placement='top'>
+                                                    <Icon icon="fluent-mdl2:completed-solid" width="24" height="24" color='green' />
+                                                </Tooltip>}
+                                        </TableCell>
+                                    }
                                 </TableRow>
                             )
                         })

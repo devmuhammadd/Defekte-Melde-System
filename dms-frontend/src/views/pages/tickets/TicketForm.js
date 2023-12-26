@@ -21,6 +21,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { useRouter } from 'next/router'
 import { useAuth } from 'src/hooks/useAuth'
 import toast from 'react-hot-toast'
+import { ticketCreateRoles } from 'src/utils/roleUtils';
 
 const schema = yup.object().shape({
     title: yup.string().required(),
@@ -41,6 +42,10 @@ const TicketForm = ({ title, onFormSubmit, ticket, successMessage }) => {
     const [selectedLocation, setSelectedLocation] = useState(ticket?.location || 'Room');
     const [stationData, setStationData] = useState('');
     const [selectedStation, setSelectedStation] = useState(ticket?.stationId || '');
+
+    useEffect(() => {
+        if (!ticketCreateRoles.includes(user?.role)) router.push('/');
+    }, []);
 
     useEffect(() => {
         getNewTicketData()
@@ -94,7 +99,7 @@ const TicketForm = ({ title, onFormSubmit, ticket, successMessage }) => {
                 params['status'] = 'Opened';
             }
             await onFormSubmit(params);
-            router.push('/dms');
+            router.push('/tickets');
             toast.success(successMessage);
         } catch (err) {
             toast.error("Unable to proceed!");
@@ -102,7 +107,7 @@ const TicketForm = ({ title, onFormSubmit, ticket, successMessage }) => {
     }
 
     const handleCancel = () => {
-        router.push('/dms');
+        router.push('/tickets');
     }
 
     return (

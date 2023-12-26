@@ -5,7 +5,7 @@ from app.schemas.user import ShowUser
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
 from app.db.session import get_db
-from typing import List
+from typing import List, Optional
 from app.db.models.vehicle import Vehicle
 from app.db.models.station import Station
 
@@ -16,6 +16,8 @@ router = APIRouter(prefix="/vehicles")
 def get_all_vehicles(
     organization_id: int = Query(...,
                                  description="Organization ID to filter vehicles"),
+    station_id: int = Query(...,
+                            description="Station ID to filter vehicles"),
     current_user: ShowUser = Depends(authenticate_user_token),
     db: Session = Depends(get_db)
 ):
@@ -26,8 +28,12 @@ def get_all_vehicles(
             Station.organization_id == organization_id,
             Vehicle.station_id == Station.id
         )
-        .order_by(Vehicle.id)
     )
+
+    if station_id is not -1:
+        query = query.filter(Vehicle.station_id == station_id)
+
+    query = query.order_by(Vehicle.id)
 
     vehicles = query.all()
 

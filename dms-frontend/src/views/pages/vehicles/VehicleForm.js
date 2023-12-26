@@ -20,6 +20,7 @@ import { useRouter } from 'next/router'
 import { useAuth } from 'src/hooks/useAuth'
 import toast from 'react-hot-toast'
 import { useStation, useUser } from 'src/hooks';
+import { chiefRoles } from 'src/utils/roleUtils'
 
 const schema = yup.object().shape({
     name: yup.string().required(),
@@ -32,8 +33,14 @@ const VehicleForm = ({ title, onFormSubmit, vehicle, successMessage }) => {
     const { user } = useAuth();
 
     useEffect(() => {
-        getStations(user?.organizationId);
+        if (!chiefRoles.includes(user?.role)) router.push('/');
     }, []);
+
+    useEffect(() => {
+        getStations(user?.organizationId, user?.stationId);
+    }, []);
+
+    const calculateStationId = () => user?.role === 'Chief' ? user?.stationId : vehicle?.stationId;
 
     const {
         control,
@@ -44,7 +51,7 @@ const VehicleForm = ({ title, onFormSubmit, vehicle, successMessage }) => {
         resolver: yupResolver(schema),
         defaultValues: {
             name: vehicle?.name || '',
-            stationId: vehicle?.stationId || '',
+            stationId: calculateStationId() || '',
         }
     })
 

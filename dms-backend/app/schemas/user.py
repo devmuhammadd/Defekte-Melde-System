@@ -20,7 +20,7 @@ class UserProfileUpdate(BaseModel):
 
 class UserRoleUpdate(BaseModel):
     role: Optional[str]
-    station_id: Optional[int]
+    station_id: Optional[str]
 
 
 class ShowUser(BaseModel):

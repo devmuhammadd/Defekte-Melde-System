@@ -46,7 +46,7 @@ def create_new_user(user: UserCreate, db: Session):
         is_active=True,
         is_superuser=False,
         full_name=user.full_name,
-        role="member"
+        role="Member"
     )
     db.add(user)
     db.commit()
@@ -82,5 +82,5 @@ def update_password(username: str, password_payload: PasswordUpdate, db: Session
 
 def get_station_chief_user(station_id: int, db: Session):
     user = db.query(User).filter(
-        User.station_id == station_id and User.role == 'chief').first()
+        User.station_id == station_id, User.role == 'Chief').first()
     return user if user else None

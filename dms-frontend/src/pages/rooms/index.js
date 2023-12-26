@@ -1,4 +1,7 @@
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
+import { useAuth } from 'src/hooks/useAuth';
+import { chiefRoles, viewOnlyRoles } from 'src/utils/roleUtils';
 import Dashboard from 'src/views/pages/rooms/Dashboard';
 import EditRoom from 'src/views/pages/rooms/EditRoom';
 import NewRoom from 'src/views/pages/rooms/NewRoom';
@@ -6,6 +9,11 @@ import NewRoom from 'src/views/pages/rooms/NewRoom';
 const Home = ({ hasQueryParams }) => {
     const router = useRouter();
     const { newRoom, roomId } = router?.query;
+    const { user } = useAuth();
+
+    useEffect(() => {
+        if (!chiefRoles.includes(user?.role) && !viewOnlyRoles.includes(user?.role)) router.push('/');
+    }, []);
 
     const renderComponent = () => {
         if (hasQueryParams) {
