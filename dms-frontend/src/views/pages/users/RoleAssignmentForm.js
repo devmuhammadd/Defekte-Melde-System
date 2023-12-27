@@ -21,34 +21,32 @@ import toast from 'react-hot-toast'
 import { getAvailableStations } from 'src/repository/OrganizationsRepository'
 import { adminRoles } from 'src/utils/roleUtils'
 import { useAuth } from 'src/hooks/useAuth'
+import { useStation } from 'src/hooks'
 
 const schema = yup.object().shape({
     role: yup.string().required(),
     stationId: yup.string()
 });
 
+const roles = ['Public Administrator', 'Chief Mechanic', 'Chief', 'Mechanic', 'Reporter']
+
 const RoleAssignmentForm = (props) => {
-    const { title, onFormSubmit, user, successMessage, roles, organizationId } = props;
+    const { title, onFormSubmit, user, successMessage, organizationId } = props;
     const router = useRouter();
     const [selectedRole, setSelectedRole] = useState();
-    const [stations, setStations] = useState();
     const auth = useAuth();
+    const { stations, getStations } = useStation();
 
     useEffect(() => {
         if (!adminRoles.includes(auth?.user?.role)) router.push('/');
     }, []);
 
+    useEffect(() => {
+        getStations();
+    }, []);
+
     const handleRoleChange = (role) => {
         setSelectedRole(role);
-        if (!['Public Administrator', 'Chief Mechanic'].includes(role)) {
-            getAvailableStations(organizationId, role)
-                .then((res) => {
-                    setStations(res?.data);
-                })
-                .catch((err) => {
-                    toast.error('Unable to fetch stations!');
-                })
-        }
     }
 
     const {

@@ -17,7 +17,7 @@ const Dashboard = () => {
     const { stations, loading, deleteStation, getStations } = useStation();
 
     useEffect(() => {
-        getStations(user?.organizationId, user?.stationId);
+        getStations();
     }, []);
 
     const handleNewStationClick = () => {

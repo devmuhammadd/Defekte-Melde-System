@@ -4,7 +4,7 @@ const navigation = () => {
       title: 'Tickets',
       path: '/tickets',
       icon: 'ion:ticket-outline',
-      'authority': ['Public Administrator', 'Chief Mechanic', 'Chief', 'Mechanic', 'Reporter']
+      'authority': ['Admin', 'Public Administrator', 'Chief Mechanic', 'Chief', 'Mechanic', 'Reporter']
     },
     {
       title: 'Fire Stations',

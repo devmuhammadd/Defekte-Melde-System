@@ -27,7 +27,7 @@ const Dashboard = () => {
         router.push(`/users?userId=${userId}`);
     }
 
-    if (loading || organizationUsers?.length === 0) {
+    if (loading) {
         return (
             <Grid item xs={12}>
                 <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column', justifyContent: 'center' }}>

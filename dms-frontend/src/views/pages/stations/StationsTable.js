@@ -20,7 +20,6 @@ const StationsTable = ({ stations, handleDeleteStation, handleEditStation }) => 
                 <TableHead>
                     <TableRow>
                         <TableCell>Name</TableCell>
-                        <TableCell>Chief</TableCell>
                         {!viewOnlyRoles.includes(user?.role) && <TableCell>Actions</TableCell>}
                     </TableRow>
                 </TableHead>
@@ -39,7 +38,6 @@ const StationsTable = ({ stations, handleDeleteStation, handleEditStation }) => 
                                     <TableCell component='th' scope='row'>
                                         {station?.name}
                                     </TableCell>
-                                    <TableCell>{station?.chief}</TableCell>
                                     {!viewOnlyRoles.includes(user?.role) &&
                                         <TableCell sx={{ display: 'flex', gap: '10px' }}>
                                             <Tooltip title='Edit' placement='top'>

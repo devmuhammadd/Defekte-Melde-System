@@ -37,7 +37,7 @@ const VehicleForm = ({ title, onFormSubmit, vehicle, successMessage }) => {
     }, []);
 
     useEffect(() => {
-        getStations(user?.organizationId, user?.stationId);
+        getStations();
     }, []);
 
     const calculateStationId = () => user?.role === 'Chief' ? user?.stationId : vehicle?.stationId;

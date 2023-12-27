@@ -1,4 +1,5 @@
 from app.db.models.room import Room
+from app.db.models.station import Station
 from app.db.models.vehicle import Vehicle
 from app.db.session import get_db
 from app.db.base import Base
@@ -19,13 +20,10 @@ class Ticket(Base):
     location_id = Column(Integer, nullable=False)
     is_deleted = Column(Boolean, nullable=False)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
-    reporter_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     station_id = Column(Integer, ForeignKey('stations.id'), nullable=False)
 
     user = relationship("User", foreign_keys=[
                         user_id], backref="created_tickets")
-    reporter = relationship("User", foreign_keys=[
-                            reporter_id], backref="reported_tickets")
     station = relationship("Station", foreign_keys=[station_id])
 
     def to_dict(self):
@@ -44,8 +42,7 @@ class Ticket(Base):
             'location_id': location_area.id,
             'user': self.user.full_name if self.user else None,
             'user_id': self.user.id if self.user else None,
-            'reporter': self.reporter.full_name if self.reporter else None,
-            'reporter_id': self.reporter.id if self.reporter else None
+            'is_deleted': self.is_deleted
         }
 
     def get_location(self):
@@ -60,11 +57,26 @@ class Ticket(Base):
         return None
 
 
-def get_unique_status_counts(db: Session):
+def get_unique_status_counts(current_user, db: Session):
     try:
-        status_counts = (
+        query = (
             db.query(Ticket.status, func.count(Ticket.status))
-            .filter(Ticket.is_deleted == False)
+            .join(Station)
+            .filter(
+                Station.organization_id == current_user['organization_id'],
+                Ticket.station_id == Station.id,
+                Ticket.is_deleted == False
+            )
+        )
+
+        if current_user['role'] in 'Chief':
+            query = query.filter(Ticket.station_id ==
+                                 current_user['station_id'])
+        elif current_user['role'] in ['Reporter', 'Mechanic']:
+            query = query.filter(Ticket.user_id == current_user['id'])
+
+        status_counts = (
+            query
             .group_by(Ticket.status)
             .all()
         )

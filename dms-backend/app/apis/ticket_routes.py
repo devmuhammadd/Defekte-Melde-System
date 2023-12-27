@@ -1,7 +1,7 @@
 from typing import List
 from app.utils.user import authenticate_user_token
 from app.schemas.user import ShowUser
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 from app.db.models.ticket import Ticket, get_unique_status_counts
 from app.db.models.user import User
@@ -15,25 +15,31 @@ router = APIRouter(prefix="/tickets")
 
 
 @router.get("/", response_model=List[ShowTicket], status_code=status.HTTP_200_OK)
-def get_all_tickets(current_user: ShowUser = Depends(authenticate_user_token), db: Session = Depends(get_db)):
-    tickets = db.query(Ticket).filter(
-        Ticket.is_deleted == False).order_by(Ticket.id).all()
+def get_all_stations(current_user: ShowUser = Depends(authenticate_user_token), db: Session = Depends(get_db)):
+    query = (
+        db.query(Ticket)
+        .join(Station)
+        .filter(
+            Station.organization_id == current_user['organization_id'],
+            Ticket.station_id == Station.id,
+            Ticket.is_deleted == False
+        )
+    )
+
+    if current_user['role'] in 'Chief':
+        query = query.filter(Ticket.station_id == current_user['station_id'])
+    elif current_user['role'] in ['Reporter', 'Mechanic']:
+        query = query.filter(Ticket.user_id == current_user['id'])
+
+    tickets = query.order_by(Ticket.id).all()
+
     return [ticket.to_dict() for ticket in tickets]
 
 
 @router.get("/stats", status_code=status.HTTP_200_OK)
 def get_ticket_stats(current_user: ShowUser = Depends(authenticate_user_token), db: Session = Depends(get_db)):
-    stats = get_unique_status_counts(db)
+    stats = get_unique_status_counts(current_user, db)
     return stats
-
-
-@router.get("/new", status_code=status.HTTP_200_OK)
-def get_new_ticket_data(current_user: ShowUser = Depends(authenticate_user_token), db: Session = Depends(get_db)):
-    reporters = [user.to_dict() for user in db.query(
-        User).all() if user.id != current_user.id]
-    stations = [station.to_dict() for station in db.query(Station).all()]
-
-    return {'reporters': reporters, 'stations': stations}
 
 
 @router.post("/", response_model=ShowTicket, status_code=status.HTTP_201_CREATED)

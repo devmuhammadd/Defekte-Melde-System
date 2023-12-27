@@ -53,9 +53,9 @@ export const useVehicleActions = () => {
         loadingCompleted
     } = VehicleSlice.actions;
 
-    const getVehicles = async (organizationId, stationId) => {
+    const getVehicles = async () => {
         dispatch(loadingStart());
-        await getVehiclesApi(organizationId, stationId).then((res) => {
+        await getVehiclesApi().then((res) => {
             dispatch(setVehicles(res?.data));
         });
         dispatch(loadingCompleted());

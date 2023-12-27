@@ -17,7 +17,6 @@ class StationUpdate(StationBase):
 class ShowStation(StationBase):
     id: int
     organization: str
-    chief: str
 
     class Config:
         from_attributes = True

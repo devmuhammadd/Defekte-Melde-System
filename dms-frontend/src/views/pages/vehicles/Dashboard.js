@@ -17,7 +17,7 @@ const Dashboard = () => {
     const { vehicles, loading, deleteVehicle, getVehicles } = useVehicle();
 
     useEffect(() => {
-        getVehicles(user?.organizationId, user?.stationId);
+        getVehicles();
     }, []);
 
     const handleNewVehicleClick = () => {

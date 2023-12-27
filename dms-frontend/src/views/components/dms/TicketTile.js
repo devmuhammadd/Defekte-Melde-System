@@ -12,8 +12,12 @@ import CustomChip from 'src/@core/components/mui/chip'
 import OptionsMenu from 'src/@core/components/option-menu'
 
 import { backgroundColorSelector, statusColorSelector, urgencyColorSelector } from 'src/utils/ticketUtils';
+import { useAuth } from 'src/hooks/useAuth'
+import { viewOnlyRoles } from 'src/utils/roleUtils'
 
 function TicketTile({ ticket, handleDeleteTicket, handleEditTicket, handleTicketStatusChange }) {
+    const { user } = useAuth();
+
     return (
         <Card sx={{ backgroundColor: backgroundColorSelector[ticket?.urgency] }}>
             <CardHeader
@@ -28,11 +32,11 @@ function TicketTile({ ticket, handleDeleteTicket, handleEditTicket, handleTicket
                         <Typography component='span' sx={{ mr: 1, fontWeight: 500 }}>
                             Reporter:
                         </Typography>{' '}
-                        {ticket?.reporter}
+                        {ticket?.userId === user?.id ? 'You' : ticket?.user}
                     </Typography>
                 }
                 action={
-                    <OptionsMenu
+                    !viewOnlyRoles.includes(user?.role) && <OptionsMenu
                         iconButtonProps={{ size: 'small', sx: { color: 'text.disabled' } }}
                         options={[
                             { text: 'Edit Ticket', menuItemProps: { onClick: () => handleEditTicket(ticket?.id) } },
@@ -118,18 +122,6 @@ function TicketTile({ ticket, handleDeleteTicket, handleEditTicket, handleTicket
                             <>
                                 <Typography sx={{ fontWeight: 500 }}>Contact</Typography>
                                 <Typography sx={{ color: 'text.secondary' }}>{ticket?.contact}</Typography>
-                            </>
-                        }
-                    />
-                    <CustomChip
-                        rounded
-                        size='small'
-                        skin='light'
-                        sx={{ height: 60 }}
-                        label={
-                            <>
-                                <Typography sx={{ fontWeight: 500 }}>Creator</Typography>
-                                <Typography sx={{ color: 'text.secondary' }}>{ticket?.user}</Typography>
                             </>
                         }
                     />

@@ -37,7 +37,7 @@ const RoomForm = ({ title, onFormSubmit, room, successMessage }) => {
     }, []);
 
     useEffect(() => {
-        getStations(user?.organizationId, user?.stationId);
+        getStations();
     }, []);
 
     const calculateStationId = () => user?.role === 'Chief' ? user?.stationId : room?.stationId;

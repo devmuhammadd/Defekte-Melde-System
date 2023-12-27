@@ -47,30 +47,3 @@ def create_ticket(organization_data: OrganizationCreate, current_user: ShowUser 
         db.refresh(current_user_db)
 
     return {'organization': new_organization.name, 'role': 'Admin'}
-
-
-@router.get("/{organization_id}/available_roles", status_code=status.HTTP_200_OK)
-def get_available_roles(organization_id: int, current_user: ShowUser = Depends(authenticate_user_token), db: Session = Depends(get_db)):
-    existing_roles = [result[0] for result in set(db.query(User.role).filter(
-        User.organization_id == organization_id).all())]
-
-    predefined_roles = ['Chief', 'Mechanic', 'Reporter']
-    additional_roles = ['Public Administrator', 'Chief Mechanic']
-
-    roles = [
-        role for role in additional_roles if role not in existing_roles] + predefined_roles
-
-    return roles
-
-
-@router.get("/{organization_id}/available_stations", status_code=status.HTTP_200_OK)
-def get_available_stations(organization_id: int, role: str = Query(...,
-                                                                   description="Role to filter stations"), current_user: ShowUser = Depends(authenticate_user_token), db: Session = Depends(get_db)):
-    existing_station_ids = {result[0] for result in db.query(
-        User.station_id).filter(User.organization_id == organization_id, User.role == role).all()}
-    available_stations = db.query(Station).filter(~Station.id.in_(existing_station_ids)
-                                                  ).all()
-    stations = [{'id': station.id, 'name': station.name}
-                for station in available_stations]
-
-    return stations

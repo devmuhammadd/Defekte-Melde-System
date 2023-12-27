@@ -13,25 +13,18 @@ router = APIRouter(prefix="/vehicles")
 
 
 @router.get("/", response_model=List[ShowVehicle], status_code=status.HTTP_200_OK)
-def get_all_vehicles(
-    organization_id: int = Query(...,
-                                 description="Organization ID to filter vehicles"),
-    station_id: int = Query(...,
-                            description="Station ID to filter vehicles"),
-    current_user: ShowUser = Depends(authenticate_user_token),
-    db: Session = Depends(get_db)
-):
+def get_all_vehicles(current_user: ShowUser = Depends(authenticate_user_token), db: Session = Depends(get_db)):
     query = (
         db.query(Vehicle)
         .join(Station)
         .filter(
-            Station.organization_id == organization_id,
+            Station.organization_id == current_user['organization_id'],
             Vehicle.station_id == Station.id
         )
     )
 
-    if station_id is not -1:
-        query = query.filter(Vehicle.station_id == station_id)
+    if current_user['role'] in ['Chief']:
+        query = query.filter(Vehicle.station_id == current_user['station_id'])
 
     query = query.order_by(Vehicle.id)
 

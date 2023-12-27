@@ -1,6 +1,7 @@
 from typing import List
 from app.utils.user import authenticate_user_token, create_access_token, authenticate_user_credentials
 from app.db.models.user import User, create_new_user, update_password, update_user
+from app.db.models.station import Station
 from app.db.session import get_db
 from fastapi import APIRouter, HTTPException, Query
 from fastapi import Depends
@@ -83,24 +84,11 @@ def update_user_role(user_id: int, user_data: UserRoleUpdate, current_user: Show
     if not user:
         raise HTTPException(status_code=404, detail="User not found!")
 
-    existing_user_query = db.query(User).filter(User.id != user_id)
-
     if user_data.station_id:
-        existing_user_query = existing_user_query.filter(
-            User.station_id == user_data.station_id,
-            User.role == user_data.role
-        )
-        error_message = f"{user_data.role} role already exists in the station!"
-    else:
-        existing_user_query = existing_user_query.filter(
-            User.role == user_data.role
-        )
-        error_message = f"{user_data.role} role already exists in the organization!"
-
-    is_role_exist = existing_user_query.first()
-
-    if is_role_exist:
-        raise HTTPException(status_code=404, detail=error_message)
+        station = db.query(Station).filter(
+            Station.id == user_data.station_id).first()
+        if not station:
+            raise HTTPException(status_code=404, detail="Station not found!")
 
     user.role = user_data.role
     user.station_id = user_data.station_id or None

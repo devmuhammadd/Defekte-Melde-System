@@ -14,7 +14,7 @@ import CardActions from '@mui/material/CardActions'
 
 // ** Custom Component Import
 import CustomTextField from 'src/@core/components/mui/text-field'
-import { getNewTicketData, getStationData } from 'src/repository/TicketsRepository'
+import { getStationData } from 'src/repository/TicketsRepository'
 import * as yup from 'yup'
 import { Controller, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -22,13 +22,13 @@ import { useRouter } from 'next/router'
 import { useAuth } from 'src/hooks/useAuth'
 import toast from 'react-hot-toast'
 import { ticketCreateRoles } from 'src/utils/roleUtils';
+import { useStation } from 'src/hooks';
 
 const schema = yup.object().shape({
     title: yup.string().required(),
     description: yup.string().required(),
     contact: yup.string().required(),
     urgency: yup.string().required(),
-    reporterId: yup.string().required(),
     stationId: yup.string().required(),
     location: yup.string().required(),
     locationId: yup.string().required()
@@ -37,24 +37,19 @@ const schema = yup.object().shape({
 const TicketForm = ({ title, onFormSubmit, ticket, successMessage }) => {
     const router = useRouter();
     // ** States
-    const [data, setData] = useState([]);
     const { user } = useAuth();
     const [selectedLocation, setSelectedLocation] = useState(ticket?.location || 'Room');
     const [stationData, setStationData] = useState('');
     const [selectedStation, setSelectedStation] = useState(ticket?.stationId || '');
+    const { stations, getStations } = useStation();
 
     useEffect(() => {
         if (!ticketCreateRoles.includes(user?.role)) router.push('/');
     }, []);
 
     useEffect(() => {
-        getNewTicketData()
-            .then((res) => {
-                setData(res?.data);
-            })
-    }, []);
+        getStations();
 
-    useEffect(() => {
         if (ticket) {
             handleStationChange(ticket?.stationId);
         }
@@ -80,7 +75,6 @@ const TicketForm = ({ title, onFormSubmit, ticket, successMessage }) => {
             description: ticket?.description || '',
             contact: ticket?.contact || '',
             urgency: ticket?.urgency || '',
-            reporterId: ticket?.reporterId || '',
             stationId: ticket?.stationId || '',
             location: ticket?.location || 'Room',
             locationId: ticket?.locationId || '',
@@ -94,9 +88,11 @@ const TicketForm = ({ title, onFormSubmit, ticket, successMessage }) => {
                 params['id'] = ticket?.id;
                 params['userId'] = ticket?.userId;
                 params['status'] = ticket?.status;
+                params['isDeleted'] = ticket?.isDeleted;
             } else {
                 params['userId'] = user?.id;
                 params['status'] = 'Opened';
+                params['isDeleted'] = false;
             }
             await onFormSubmit(params);
             router.push('/tickets');
@@ -163,30 +159,6 @@ const TicketForm = ({ title, onFormSubmit, ticket, successMessage }) => {
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             <Controller
-                                name='reporterId'
-                                control={control}
-                                rules={{ required: true }}
-                                render={({ field: { value, onChange, onBlur } }) => (
-                                    <CustomTextField
-                                        select
-                                        fullWidth
-                                        label='Reporter'
-                                        value={value}
-                                        defaultValue=''
-                                        onBlur={onBlur}
-                                        onChange={onChange}
-                                        error={Boolean(errors.reporterId)}
-                                        {...(errors.reporterId && { helperText: errors.reporterId.message })}
-                                    >
-                                        {data?.reporters?.map((reporter) =>
-                                            <MenuItem key={`reporter#${reporter?.id}`} value={reporter?.id}>{reporter?.name}</MenuItem>
-                                        )}
-                                    </CustomTextField>
-                                )}
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <Controller
                                 name='contact'
                                 control={control}
                                 rules={{ required: true }}
@@ -224,7 +196,7 @@ const TicketForm = ({ title, onFormSubmit, ticket, successMessage }) => {
                                         error={Boolean(errors.stationId)}
                                         {...(errors.stationId && { helperText: errors.stationId.message })}
                                     >
-                                        {data?.stations?.map((station) =>
+                                        {stations?.map((station) =>
                                             <MenuItem key={`item#${station?.id}`} value={station?.id}>{station?.name}</MenuItem>
                                         )}
                                     </CustomTextField>

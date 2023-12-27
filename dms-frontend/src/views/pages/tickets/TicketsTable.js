@@ -10,9 +10,12 @@ import { backgroundColorSelector } from 'src/utils/ticketUtils'
 import { Icon } from '@iconify/react'
 import { Checkbox, Tooltip } from '@mui/material'
 import { useState } from 'react'
+import { viewOnlyRoles } from 'src/utils/roleUtils'
+import { useAuth } from 'src/hooks/useAuth'
 
 const TicketsTable = ({ tickets, handleDeleteTicket, handleEditTicket, handleTicketStatusChange }) => {
     const [selectedTickets, setSelectedTickets] = useState([]);
+    const { user } = useAuth();
 
     const handleSelectTicket = (event, id) => {
         const selectedIndex = selectedTickets.indexOf(id)
@@ -42,7 +45,7 @@ const TicketsTable = ({ tickets, handleDeleteTicket, handleEditTicket, handleTic
                         <TableCell>Urgency</TableCell>
                         <TableCell>Status</TableCell>
                         <TableCell>Reporter</TableCell>
-                        <TableCell>Actions</TableCell>
+                        {!viewOnlyRoles.includes(user?.role) && <TableCell>Actions</TableCell>}
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -71,33 +74,35 @@ const TicketsTable = ({ tickets, handleDeleteTicket, handleEditTicket, handleTic
                                     <TableCell>{`${ticket?.station} - ${ticket?.locationArea}`}</TableCell>
                                     <TableCell>{ticket?.urgency}</TableCell>
                                     <TableCell>{ticket?.status}</TableCell>
-                                    <TableCell>{ticket?.reporter}</TableCell>
-                                    <TableCell sx={{ display: 'flex', justifyContent: 'space-evenly' }}>
-                                        <Tooltip title='Edit' placement='top'>
-                                            <Icon icon="tabler:edit" width="24" height="24"
-                                                style={{ cursor: 'pointer' }}
-                                                onClick={() => handleEditTicket(ticket?.id)}
-                                            />
-                                        </Tooltip>
-                                        <Tooltip title='Mark In-Progress' placement='top'>
-                                            <Icon icon="carbon:in-progress" width="24" height="24"
-                                                style={{ cursor: 'pointer' }}
-                                                onClick={() => handleTicketStatusChange(ticket, 'In-progress')}
-                                            />
-                                        </Tooltip>
-                                        <Tooltip title='Mark as Completed' placement='top'>
-                                            <Icon icon="mdi:tick-outline" width="24" height="24"
-                                                style={{ cursor: 'pointer' }}
-                                                onClick={() => handleTicketStatusChange(ticket, 'Completed')}
-                                            />
-                                        </Tooltip>
-                                        <Tooltip title='Delete' placement='top'>
-                                            <Icon icon="material-symbols:delete-outline" width="24" height="24"
-                                                style={{ cursor: 'pointer' }}
-                                                onClick={() => handleDeleteTicket(ticket)}
-                                            />
-                                        </Tooltip>
-                                    </TableCell>
+                                    <TableCell>{ticket?.user}</TableCell>
+                                    {!viewOnlyRoles.includes(user?.role) &&
+                                        <TableCell sx={{ display: 'flex', justifyContent: 'space-evenly' }}>
+                                            <Tooltip title='Edit' placement='top'>
+                                                <Icon icon="tabler:edit" width="24" height="24"
+                                                    style={{ cursor: 'pointer' }}
+                                                    onClick={() => handleEditTicket(ticket?.id)}
+                                                />
+                                            </Tooltip>
+                                            <Tooltip title='Mark In-Progress' placement='top'>
+                                                <Icon icon="carbon:in-progress" width="24" height="24"
+                                                    style={{ cursor: 'pointer' }}
+                                                    onClick={() => handleTicketStatusChange(ticket, 'In-progress')}
+                                                />
+                                            </Tooltip>
+                                            <Tooltip title='Mark as Completed' placement='top'>
+                                                <Icon icon="mdi:tick-outline" width="24" height="24"
+                                                    style={{ cursor: 'pointer' }}
+                                                    onClick={() => handleTicketStatusChange(ticket, 'Completed')}
+                                                />
+                                            </Tooltip>
+                                            <Tooltip title='Delete' placement='top'>
+                                                <Icon icon="material-symbols:delete-outline" width="24" height="24"
+                                                    style={{ cursor: 'pointer' }}
+                                                    onClick={() => handleDeleteTicket(ticket)}
+                                                />
+                                            </Tooltip>
+                                        </TableCell>
+                                    }
                                 </TableRow>
                             )
                         })

@@ -53,9 +53,9 @@ export const useRoomActions = () => {
         loadingCompleted
     } = RoomSlice.actions;
 
-    const getRooms = async (organizationId, stationId) => {
+    const getRooms = async () => {
         dispatch(loadingStart());
-        await getRoomsApi(organizationId, stationId).then((res) => {
+        await getRoomsApi().then((res) => {
             dispatch(setRooms(res?.data));
         });
         dispatch(loadingCompleted());

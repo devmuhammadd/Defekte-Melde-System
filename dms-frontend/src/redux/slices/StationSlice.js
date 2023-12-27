@@ -53,9 +53,9 @@ export const useStationActions = () => {
         loadingCompleted
     } = StationSlice.actions;
 
-    const getStations = async (organizationId, stationId) => {
+    const getStations = async () => {
         dispatch(loadingStart());
-        await getStationsApi(organizationId, stationId).then((res) => {
+        await getStationsApi().then((res) => {
             dispatch(setStations(res?.data));
         });
         dispatch(loadingCompleted());

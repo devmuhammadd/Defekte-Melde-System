@@ -17,7 +17,7 @@ const Dashboard = () => {
     const { rooms, loading, deleteRoom, getRooms } = useRoom();
 
     useEffect(() => {
-        getRooms(user?.organizationId, user?.stationId);
+        getRooms();
     }, []);
 
     const handleNewRoomClick = () => {
