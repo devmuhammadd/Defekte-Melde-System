@@ -40,8 +40,6 @@ const VehicleForm = ({ title, onFormSubmit, vehicle, successMessage }) => {
         getStations();
     }, []);
 
-    const calculateStationId = () => user?.role === 'Chief' ? user?.stationId : vehicle?.stationId;
-
     const {
         control,
         handleSubmit,
@@ -51,7 +49,7 @@ const VehicleForm = ({ title, onFormSubmit, vehicle, successMessage }) => {
         resolver: yupResolver(schema),
         defaultValues: {
             name: vehicle?.name || '',
-            stationId: calculateStationId() || '',
+            stationId: vehicle?.stationId || '',
         }
     })
 

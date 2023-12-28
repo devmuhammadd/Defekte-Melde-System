@@ -37,10 +37,10 @@ const Table = () => {
     MuiTableRow: {
       styleOverrides: {
         root: ({ theme }) => ({
-          '& .MuiTableCell-head:not(.MuiTableCell-paddingCheckbox):first-child, & .MuiTableCell-root:not(.MuiTableCell-paddingCheckbox):first-child ':
-            {
-              paddingLeft: theme.spacing(6)
-            },
+          '& .MuiTableCell-head:not(.MuiTableCell-paddingCheckbox):first-of-type, & .MuiTableCell-root:not(.MuiTableCell-paddingCheckbox):first-of-type ':
+          {
+            paddingLeft: theme.spacing(6)
+          },
           '& .MuiTableCell-head:last-child, & .MuiTableCell-root:last-child': {
             paddingRight: theme.spacing(6)
           }

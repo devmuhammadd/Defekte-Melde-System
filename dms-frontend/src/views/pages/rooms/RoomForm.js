@@ -40,8 +40,6 @@ const RoomForm = ({ title, onFormSubmit, room, successMessage }) => {
         getStations();
     }, []);
 
-    const calculateStationId = () => user?.role === 'Chief' ? user?.stationId : room?.stationId;
-
     const {
         control,
         handleSubmit,
@@ -51,7 +49,7 @@ const RoomForm = ({ title, onFormSubmit, room, successMessage }) => {
         resolver: yupResolver(schema),
         defaultValues: {
             name: room?.name || '',
-            stationId: calculateStationId() || '',
+            stationId: room?.stationId || '',
         }
     })
 
