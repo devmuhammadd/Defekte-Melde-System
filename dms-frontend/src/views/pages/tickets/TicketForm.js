@@ -98,7 +98,7 @@ const TicketForm = ({ title, onFormSubmit, ticket, successMessage }) => {
             router.push('/tickets');
             toast.success(successMessage);
         } catch (err) {
-            toast.error("Unable to proceed!");
+            toast.error(err?.response?.data?.detail || "Unable to proceed!");
         }
     }
 

@@ -42,6 +42,15 @@ def get_ticket_stats(current_user: ShowUser = Depends(authenticate_user_token), 
 
 @router.post("/", response_model=ShowTicket, status_code=status.HTTP_201_CREATED)
 def create_ticket(ticket_data: TicketCreate, current_user: ShowUser = Depends(authenticate_user_token), db: Session = Depends(get_db)):
+    ticket = db.query(Ticket).filter(
+        Ticket.title == ticket_data.title,
+        Ticket.status.in_(['Opened', 'In-progress'])
+    ).first()
+
+    if ticket:
+        raise HTTPException(
+            status_code=404, detail="Ticket exist already with same title!")
+
     new_ticket = Ticket(**ticket_data.model_dump())
     db.add(new_ticket)
     db.commit()
