@@ -12,8 +12,32 @@ import CustomChip from 'src/@core/components/mui/chip'
 import OptionsMenu from 'src/@core/components/option-menu'
 
 import { backgroundColorSelector, statusColorSelector, urgencyColorSelector } from 'src/utils/ticketUtils';
+import { useAuth } from 'src/hooks/useAuth'
+import { viewOnlyRoles } from 'src/utils/roleUtils'
 
-function TicketTile({ ticket, handleDeleteTicket, handleEditTicket, handleTicketStatusChange }) {
+function TicketTile(props) {
+    const {
+        ticket,
+        handleDeleteTicket,
+        handleEditTicket,
+        handleTicketStatusChange,
+        handleAssignMechanic
+    } = props;
+    const { user } = useAuth();
+
+    const getOptions = () => {
+        const options = [
+            { text: 'Edit Ticket', menuItemProps: { onClick: () => handleEditTicket(ticket?.id) } },
+            { text: 'Mark In-progress', menuItemProps: { onClick: () => handleTicketStatusChange(ticket, 'In-progress') } },
+            { text: 'Complete Ticket', menuItemProps: { onClick: () => handleTicketStatusChange(ticket, 'Completed') } },
+            { text: 'Delete Ticket', menuItemProps: { sx: { color: 'error.main' }, onClick: () => handleDeleteTicket(ticket) } }
+        ]
+        if (!ticket?.mechanic)
+            options.push({ text: 'Assign Mechanic', menuItemProps: { onClick: () => handleAssignMechanic(ticket) } })
+
+        return options;
+    }
+
     return (
         <Card sx={{ backgroundColor: backgroundColorSelector[ticket?.urgency] }}>
             <CardHeader
@@ -28,19 +52,13 @@ function TicketTile({ ticket, handleDeleteTicket, handleEditTicket, handleTicket
                         <Typography component='span' sx={{ mr: 1, fontWeight: 500 }}>
                             Reporter:
                         </Typography>{' '}
-                        {ticket?.reporter}
+                        {ticket?.userId === user?.id ? 'You' : ticket?.user}
                     </Typography>
                 }
                 action={
-                    <OptionsMenu
+                    !viewOnlyRoles.includes(user?.role) && <OptionsMenu
                         iconButtonProps={{ size: 'small', sx: { color: 'text.disabled' } }}
-                        options={[
-                            { text: 'Edit Ticket', menuItemProps: { onClick: () => handleEditTicket(ticket?.id) } },
-                            { divider: true, dividerProps: { sx: { my: theme => `${theme.spacing(2)} !important` } } },
-                            { text: 'Mark In-progress', menuItemProps: { onClick: () => handleTicketStatusChange(ticket, 'In-progress') } },
-                            { text: 'Complete Ticket', menuItemProps: { onClick: () => handleTicketStatusChange(ticket, 'Completed') } },
-                            { text: 'Delete Ticket', menuItemProps: { sx: { color: 'error.main' }, onClick: () => handleDeleteTicket(ticket) } }
-                        ]}
+                        options={getOptions()}
                     />
                 }
                 title={
@@ -118,18 +136,6 @@ function TicketTile({ ticket, handleDeleteTicket, handleEditTicket, handleTicket
                             <>
                                 <Typography sx={{ fontWeight: 500 }}>Contact</Typography>
                                 <Typography sx={{ color: 'text.secondary' }}>{ticket?.contact}</Typography>
-                            </>
-                        }
-                    />
-                    <CustomChip
-                        rounded
-                        size='small'
-                        skin='light'
-                        sx={{ height: 60 }}
-                        label={
-                            <>
-                                <Typography sx={{ fontWeight: 500 }}>Creator</Typography>
-                                <Typography sx={{ color: 'text.secondary' }}>{ticket?.user}</Typography>
                             </>
                         }
                     />

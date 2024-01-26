@@ -9,6 +9,7 @@ import { useRouter } from 'next/router'
 import VehiclesTable from './VehiclesTable'
 import toast from 'react-hot-toast'
 import { useAuth } from 'src/hooks/useAuth'
+import { viewOnlyRoles } from 'src/utils/roleUtils'
 
 const Dashboard = () => {
     const router = useRouter();
@@ -16,8 +17,7 @@ const Dashboard = () => {
     const { vehicles, loading, deleteVehicle, getVehicles } = useVehicle();
 
     useEffect(() => {
-        if (user?.role !== 'admin') router.push('/');
-        getVehicles(user?.organizationId);
+        getVehicles();
     }, []);
 
     const handleNewVehicleClick = () => {
@@ -40,7 +40,7 @@ const Dashboard = () => {
         router.push(`/vehicles?vehicleId=${vehicleId}`);
     }
 
-    if (loading || user?.role !== 'admin') {
+    if (loading) {
         return (
             <Grid item xs={12}>
                 <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column', justifyContent: 'center' }}>
@@ -53,14 +53,16 @@ const Dashboard = () => {
 
     return (
         <Grid container spacing={6}>
-            <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <Button variant='contained' color='primary'
-                    endIcon={<Icon icon='ic:baseline-plus' />}
-                    onClick={handleNewVehicleClick}
-                >
-                    New Vehicle
-                </Button>
-            </Grid>
+            {!viewOnlyRoles.includes(user?.role) &&
+                <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <Button variant='contained' color='primary'
+                        endIcon={<Icon icon='ic:baseline-plus' />}
+                        onClick={handleNewVehicleClick}
+                    >
+                        New Vehicle
+                    </Button>
+                </Grid>
+            }
             <Grid item xs={12}>
                 <VehiclesTable
                     vehicles={vehicles}

@@ -1,7 +1,14 @@
 import Grid from '@mui/material/Grid'
 import TicketTile from 'src/views/components/dms/TicketTile'
 
-const CriticalTickets = ({ tickets, handleDeleteTicket, handleEditTicket, handleTicketStatusChange }) => {
+const CriticalTickets = (props) => {
+    const {
+        tickets,
+        handleDeleteTicket,
+        handleEditTicket,
+        handleTicketStatusChange,
+        handleAssignMechanic
+    } = props;
 
     return (
         <Grid container spacing={6}>
@@ -13,6 +20,7 @@ const CriticalTickets = ({ tickets, handleDeleteTicket, handleEditTicket, handle
                             handleDeleteTicket={handleDeleteTicket}
                             handleEditTicket={handleEditTicket}
                             handleTicketStatusChange={handleTicketStatusChange}
+                            handleAssignMechanic={handleAssignMechanic}
                         />
                     </Grid>
                 )

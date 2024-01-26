@@ -8,16 +8,19 @@ import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import { Icon } from '@iconify/react'
 import { Tooltip } from '@mui/material'
+import { viewOnlyRoles } from 'src/utils/roleUtils'
+import { useAuth } from 'src/hooks/useAuth'
 
 const StationsTable = ({ stations, handleDeleteStation, handleEditStation }) => {
+    const { user } = useAuth();
+
     return (
         <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650 }} aria-label='simple table'>
                 <TableHead>
                     <TableRow>
                         <TableCell>Name</TableCell>
-                        <TableCell>Chief</TableCell>
-                        <TableCell>Actions</TableCell>
+                        {!viewOnlyRoles.includes(user?.role) && <TableCell>Actions</TableCell>}
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -35,27 +38,28 @@ const StationsTable = ({ stations, handleDeleteStation, handleEditStation }) => 
                                     <TableCell component='th' scope='row'>
                                         {station?.name}
                                     </TableCell>
-                                    <TableCell>{station?.chief}</TableCell>
-                                    <TableCell sx={{ display: 'flex', gap: '10px' }}>
-                                        <Tooltip title='Edit' placement='top'>
-                                            <Icon icon="tabler:edit" width="24" height="24"
-                                                style={{ cursor: 'pointer' }}
-                                                onClick={() => handleEditStation(station?.id)}
-                                            />
-                                        </Tooltip>
-                                        <Tooltip title='Delete' placement='top'>
-                                            <Icon icon="material-symbols:delete-outline" width="24" height="24"
-                                                style={{ cursor: 'pointer' }}
-                                                onClick={() => handleDeleteStation(station)}
-                                            />
-                                        </Tooltip>
-                                    </TableCell>
+                                    {!viewOnlyRoles.includes(user?.role) &&
+                                        <TableCell sx={{ display: 'flex', gap: '10px' }}>
+                                            <Tooltip title='Edit' placement='top'>
+                                                <Icon icon="tabler:edit" width="24" height="24"
+                                                    style={{ cursor: 'pointer' }}
+                                                    onClick={() => handleEditStation(station?.id)}
+                                                />
+                                            </Tooltip>
+                                            <Tooltip title='Delete' placement='top'>
+                                                <Icon icon="material-symbols:delete-outline" width="24" height="24"
+                                                    style={{ cursor: 'pointer' }}
+                                                    onClick={() => handleDeleteStation(station)}
+                                                />
+                                            </Tooltip>
+                                        </TableCell>
+                                    }
                                 </TableRow>
                             )
                         })
                         :
                         <TableRow>
-                            <TableCell colSpan={6}>No stations found</TableCell>
+                            <TableCell colSpan={4} sx={{ textAlign: 'center' }}>No stations found!</TableCell>
                         </TableRow>
                     }
                 </TableBody>

@@ -2,8 +2,10 @@ import { useUser } from 'src/hooks';
 import { useEffect, useState } from 'react';
 import { Box, CircularProgress, Grid, Typography } from '@mui/material';
 import RoleAssignmentForm from './RoleAssignmentForm';
+import { useAuth } from 'src/hooks/useAuth';
 
 function UpdateUserRole({ userId }) {
+    const auth = useAuth();
     const { users, updateUser } = useUser();
     const [user, setUser] = useState();
 
@@ -24,10 +26,11 @@ function UpdateUserRole({ userId }) {
 
     return (
         <RoleAssignmentForm
-            title={`Assign User Role - ${user?.fullName}`}
+            title={`Update User Role - ${user?.fullName}`}
             onFormSubmit={updateUser}
             user={user}
             successMessage="Role assigned successfully!"
+            organizationId={auth?.user?.organizationId}
         />
     )
 }

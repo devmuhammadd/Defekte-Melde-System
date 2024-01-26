@@ -94,10 +94,10 @@ export const useTicketActions = () => {
         dispatch(loadingCompleted());
     };
 
-    const deleteTicket = async (id) => {
+    const deleteTicket = async (params) => {
         dispatch(loadingStart());
-        await deleteTicketApi(id).then(() => {
-            dispatch(removeTicket({ id }));
+        await updateTicketApi(params).then((res) => {
+            dispatch(removeTicket({ id: params?.id }));
             getTicketStats();
         });
         dispatch(loadingCompleted());

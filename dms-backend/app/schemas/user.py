@@ -18,14 +18,9 @@ class UserProfileUpdate(BaseModel):
     full_name: str = None
 
 
-class UserUpdate(BaseModel):
-    id: int
-    email: EmailStr
-    username: constr()
-    full_name: str
+class UserRoleUpdate(BaseModel):
     role: Optional[str]
-    organization_id: Optional[int]
-    station_id: Optional[int]
+    station_id: Optional[str]
 
 
 class ShowUser(BaseModel):

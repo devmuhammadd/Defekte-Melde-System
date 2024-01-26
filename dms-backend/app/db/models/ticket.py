@@ -1,8 +1,9 @@
 from app.db.models.room import Room
+from app.db.models.station import Station
 from app.db.models.vehicle import Vehicle
 from app.db.session import get_db
 from app.db.base import Base
-from sqlalchemy import Column, Integer, String, ForeignKey, func
+from sqlalchemy import Column, Integer, String, ForeignKey, func, Boolean
 from sqlalchemy.orm import relationship, Session
 
 
@@ -17,15 +18,16 @@ class Ticket(Base):
     location = Column(String)
     contact = Column(String)
     location_id = Column(Integer, nullable=False)
+    is_deleted = Column(Boolean, nullable=False)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
-    reporter_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     station_id = Column(Integer, ForeignKey('stations.id'), nullable=False)
+    mechanic_id = Column(Integer, ForeignKey('users.id'), nullable=False)
 
     user = relationship("User", foreign_keys=[
                         user_id], backref="created_tickets")
-    reporter = relationship("User", foreign_keys=[
-                            reporter_id], backref="reported_tickets")
     station = relationship("Station", foreign_keys=[station_id])
+    mechanic = relationship("User", foreign_keys=[
+        mechanic_id], backref="ticket_mechanic")
 
     def to_dict(self):
         location_area = self.get_location()
@@ -43,8 +45,9 @@ class Ticket(Base):
             'location_id': location_area.id,
             'user': self.user.full_name if self.user else None,
             'user_id': self.user.id if self.user else None,
-            'reporter': self.reporter.full_name if self.reporter else None,
-            'reporter_id': self.reporter.id if self.reporter else None
+            'is_deleted': self.is_deleted,
+            'mechanic': self.mechanic.full_name if self.mechanic else None,
+            'mechanic_id': self.mechanic.id if self.mechanic else None,
         }
 
     def get_location(self):
@@ -59,10 +62,26 @@ class Ticket(Base):
         return None
 
 
-def get_unique_status_counts(db: Session):
+def get_unique_status_counts(current_user, db: Session):
     try:
-        status_counts = (
+        query = (
             db.query(Ticket.status, func.count(Ticket.status))
+            .join(Station)
+            .filter(
+                Station.organization_id == current_user['organization_id'],
+                Ticket.station_id == Station.id,
+                Ticket.is_deleted == False
+            )
+        )
+
+        if current_user['role'] in 'Chief':
+            query = query.filter(Ticket.station_id ==
+                                 current_user['station_id'])
+        elif current_user['role'] in ['Reporter', 'Mechanic']:
+            query = query.filter(Ticket.user_id == current_user['id'])
+
+        status_counts = (
+            query
             .group_by(Ticket.status)
             .all()
         )

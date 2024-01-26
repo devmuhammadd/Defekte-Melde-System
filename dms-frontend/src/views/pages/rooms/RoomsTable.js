@@ -8,8 +8,12 @@ import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import { Icon } from '@iconify/react'
 import { Tooltip } from '@mui/material'
+import { viewOnlyRoles } from 'src/utils/roleUtils'
+import { useAuth } from 'src/hooks/useAuth'
 
 const RoomsTable = ({ rooms, handleDeleteRoom, handleEditRoom }) => {
+    const { user } = useAuth();
+
     return (
         <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650 }} aria-label='simple table'>
@@ -17,7 +21,7 @@ const RoomsTable = ({ rooms, handleDeleteRoom, handleEditRoom }) => {
                     <TableRow>
                         <TableCell>Name</TableCell>
                         <TableCell>Station</TableCell>
-                        <TableCell>Actions</TableCell>
+                        {!viewOnlyRoles.includes(user?.role) && <TableCell>Actions</TableCell>}
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -36,26 +40,28 @@ const RoomsTable = ({ rooms, handleDeleteRoom, handleEditRoom }) => {
                                         {room?.name}
                                     </TableCell>
                                     <TableCell>{room?.station}</TableCell>
-                                    <TableCell sx={{ display: 'flex', gap: '10px' }}>
-                                        <Tooltip title='Edit' placement='top'>
-                                            <Icon icon="tabler:edit" width="24" height="24"
-                                                style={{ cursor: 'pointer' }}
-                                                onClick={() => handleEditRoom(room?.id)}
-                                            />
-                                        </Tooltip>
-                                        <Tooltip title='Delete' placement='top'>
-                                            <Icon icon="material-symbols:delete-outline" width="24" height="24"
-                                                style={{ cursor: 'pointer' }}
-                                                onClick={() => handleDeleteRoom(room)}
-                                            />
-                                        </Tooltip>
-                                    </TableCell>
+                                    {!viewOnlyRoles.includes(user?.role) &&
+                                        <TableCell sx={{ display: 'flex', gap: '10px' }}>
+                                            <Tooltip title='Edit' placement='top'>
+                                                <Icon icon="tabler:edit" width="24" height="24"
+                                                    style={{ cursor: 'pointer' }}
+                                                    onClick={() => handleEditRoom(room?.id)}
+                                                />
+                                            </Tooltip>
+                                            <Tooltip title='Delete' placement='top'>
+                                                <Icon icon="material-symbols:delete-outline" width="24" height="24"
+                                                    style={{ cursor: 'pointer' }}
+                                                    onClick={() => handleDeleteRoom(room)}
+                                                />
+                                            </Tooltip>
+                                        </TableCell>
+                                    }
                                 </TableRow>
                             )
                         })
                         :
                         <TableRow>
-                            <TableCell colSpan={6}>No rooms found</TableCell>
+                            <TableCell colSpan={4} sx={{ textAlign: 'center' }}>No rooms found!</TableCell>
                         </TableRow>
                     }
                 </TableBody>

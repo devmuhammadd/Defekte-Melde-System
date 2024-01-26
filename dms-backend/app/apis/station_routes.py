@@ -16,14 +16,14 @@ router = APIRouter(prefix="/stations")
 
 
 @router.get("/", response_model=List[ShowStation], status_code=status.HTTP_200_OK)
-def get_all_stations(
-    organization_id: int = Query(...,
-                                 description="Organization ID to filter stations"),
-    current_user: ShowUser = Depends(authenticate_user_token),
-    db: Session = Depends(get_db)
-):
-    stations = db.query(Station).filter(
-        Station.organization_id == organization_id).order_by(Station.id).all()
+def get_all_stations(current_user: ShowUser = Depends(authenticate_user_token), db: Session = Depends(get_db)):
+    query = db.query(Station).filter(
+        Station.organization_id == current_user['organization_id'])
+
+    if current_user['role'] in ['Reporter', 'Chief', 'Mechanic']:
+        query = query.filter(Station.id == current_user['station_id'])
+
+    stations = query.order_by(Station.id).all()
 
     return [station.to_dict() for station in stations]
 
@@ -36,13 +36,7 @@ def create_station(station_data: StationCreate, current_user: ShowUser = Depends
     db.add(new_station)
     db.commit()
     db.refresh(new_station)
-    chief_user = db.query(User).filter(
-        User.id == station_data.chief_id).first()
-    if chief_user:
-        chief_user.role = 'chief'
-        chief_user.station_id = new_station.id
-        db.commit()
-        db.refresh(chief_user)
+
     return new_station.to_dict()
 
 

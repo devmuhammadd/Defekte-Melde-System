@@ -19,7 +19,7 @@ const OnboardingInProgressCard = ({ organization }) => {
     const router = useRouter();
 
     useEffect(() => {
-        if (user?.role !== 'member') {
+        if (user?.role !== 'Member') {
             router.push('/');
         }
     }, [])
