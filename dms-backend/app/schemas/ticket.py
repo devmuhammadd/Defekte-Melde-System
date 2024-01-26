@@ -13,6 +13,7 @@ class TicketBase(BaseModel):
     user_id: int
     station_id: int
     is_deleted: bool
+    mechanic_id: Optional[int] = None
 
 
 class TicketCreate(TicketBase):
@@ -38,6 +39,8 @@ class ShowTicket(BaseModel):
     user: str
     user_id: int
     is_deleted: bool
+    mechanic: Optional[str] = None
+    mechanic_id: Optional[int] = None
 
     class Config:
         from_attributes = True

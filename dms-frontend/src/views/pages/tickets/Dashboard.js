@@ -13,6 +13,7 @@ import TicketsTable from './TicketsTable'
 import toast from 'react-hot-toast'
 import { ticketCreateRoles } from 'src/utils/roleUtils'
 import { useAuth } from 'src/hooks/useAuth'
+import AssignMechanicModal from './AssignMechanicModal'
 
 const Dashboard = () => {
     const router = useRouter();
@@ -20,6 +21,8 @@ const Dashboard = () => {
     const { tickets, ticketStats, loading, loadDmsData, deleteTicket, completeTicket } = useTicket();
     const [criticalTickets, setCriticalTickets] = useState();
     const [otherTickets, setOtherTickets] = useState();
+    const [assignMechanicTicket, setAssignMechanicTicket] = useState();
+    const [showAssignMechanicModal, setShowAssignMechanicModal] = useState(false);
 
     useEffect(() => {
         loadDmsData();
@@ -64,6 +67,11 @@ const Dashboard = () => {
         }
     }
 
+    const handleAssignMechanic = (ticket) => {
+        setAssignMechanicTicket(ticket);
+        setShowAssignMechanicModal(true);
+    }
+
     if (loading || !criticalTickets || !otherTickets) {
         return (
             <Grid item xs={12}>
@@ -96,6 +104,7 @@ const Dashboard = () => {
                     handleDeleteTicket={handleDeleteTicket}
                     handleEditTicket={handleEditTicket}
                     handleTicketStatusChange={handleTicketStatusChange}
+                    handleAssignMechanic={handleAssignMechanic}
                 />
             </Grid>
             <Grid item xs={12}>
@@ -104,7 +113,16 @@ const Dashboard = () => {
                     handleDeleteTicket={handleDeleteTicket}
                     handleEditTicket={handleEditTicket}
                     handleTicketStatusChange={handleTicketStatusChange}
+                    handleAssignMechanic={handleAssignMechanic}
                 />
+                {
+                    assignMechanicTicket &&
+                    <AssignMechanicModal
+                        ticket={assignMechanicTicket}
+                        show={showAssignMechanicModal}
+                        setShow={setShowAssignMechanicModal}
+                    />
+                }
             </Grid>
         </Grid >
     )

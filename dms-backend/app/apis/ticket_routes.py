@@ -15,7 +15,7 @@ router = APIRouter(prefix="/tickets")
 
 
 @router.get("/", response_model=List[ShowTicket], status_code=status.HTTP_200_OK)
-def get_all_stations(current_user: ShowUser = Depends(authenticate_user_token), db: Session = Depends(get_db)):
+def get_all_tickets(current_user: ShowUser = Depends(authenticate_user_token), db: Session = Depends(get_db)):
     query = (
         db.query(Ticket)
         .join(Station)
@@ -26,10 +26,8 @@ def get_all_stations(current_user: ShowUser = Depends(authenticate_user_token), 
         )
     )
 
-    if current_user['role'] in 'Chief':
+    if current_user['role'] in ['Chief', 'Reporter', 'Mechanic']:
         query = query.filter(Ticket.station_id == current_user['station_id'])
-    elif current_user['role'] in ['Reporter', 'Mechanic']:
-        query = query.filter(Ticket.user_id == current_user['id'])
 
     tickets = query.order_by(Ticket.id).all()
 

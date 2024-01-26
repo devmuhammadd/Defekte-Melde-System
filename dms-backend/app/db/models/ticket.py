@@ -21,10 +21,13 @@ class Ticket(Base):
     is_deleted = Column(Boolean, nullable=False)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     station_id = Column(Integer, ForeignKey('stations.id'), nullable=False)
+    mechanic_id = Column(Integer, ForeignKey('users.id'), nullable=False)
 
     user = relationship("User", foreign_keys=[
                         user_id], backref="created_tickets")
     station = relationship("Station", foreign_keys=[station_id])
+    mechanic = relationship("User", foreign_keys=[
+        mechanic_id], backref="ticket_mechanic")
 
     def to_dict(self):
         location_area = self.get_location()
@@ -42,7 +45,9 @@ class Ticket(Base):
             'location_id': location_area.id,
             'user': self.user.full_name if self.user else None,
             'user_id': self.user.id if self.user else None,
-            'is_deleted': self.is_deleted
+            'is_deleted': self.is_deleted,
+            'mechanic': self.mechanic.full_name if self.mechanic else None,
+            'mechanic_id': self.mechanic.id if self.mechanic else None,
         }
 
     def get_location(self):

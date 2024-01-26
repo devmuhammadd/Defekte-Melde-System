@@ -20,7 +20,7 @@ def get_all_stations(current_user: ShowUser = Depends(authenticate_user_token), 
     query = db.query(Station).filter(
         Station.organization_id == current_user['organization_id'])
 
-    if current_user['role'] in ['Reporter', 'Chief']:
+    if current_user['role'] in ['Reporter', 'Chief', 'Mechanic']:
         query = query.filter(Station.id == current_user['station_id'])
 
     stations = query.order_by(Station.id).all()

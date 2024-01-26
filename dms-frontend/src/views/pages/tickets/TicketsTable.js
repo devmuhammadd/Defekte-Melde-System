@@ -13,7 +13,14 @@ import { useState } from 'react'
 import { viewOnlyRoles } from 'src/utils/roleUtils'
 import { useAuth } from 'src/hooks/useAuth'
 
-const TicketsTable = ({ tickets, handleDeleteTicket, handleEditTicket, handleTicketStatusChange }) => {
+const TicketsTable = (props) => {
+    const {
+        tickets,
+        handleDeleteTicket,
+        handleEditTicket,
+        handleTicketStatusChange,
+        handleAssignMechanic
+    } = props;
     const [selectedTickets, setSelectedTickets] = useState([]);
     const { user } = useAuth();
 
@@ -45,6 +52,7 @@ const TicketsTable = ({ tickets, handleDeleteTicket, handleEditTicket, handleTic
                         <TableCell>Urgency</TableCell>
                         <TableCell>Status</TableCell>
                         <TableCell>Reporter</TableCell>
+                        <TableCell>Mechanic</TableCell>
                         {!viewOnlyRoles.includes(user?.role) && <TableCell>Actions</TableCell>}
                     </TableRow>
                 </TableHead>
@@ -75,6 +83,17 @@ const TicketsTable = ({ tickets, handleDeleteTicket, handleEditTicket, handleTic
                                     <TableCell>{ticket?.urgency}</TableCell>
                                     <TableCell>{ticket?.status}</TableCell>
                                     <TableCell>{ticket?.user}</TableCell>
+                                    <TableCell>
+                                        {
+                                            ticket?.mechanic ||
+                                            <Tooltip title='Assign Mechanic' placement='top'>
+                                                <Icon icon="basil:add-outline" width="24" height="24"
+                                                    style={{ cursor: 'pointer' }}
+                                                    onClick={() => handleAssignMechanic(ticket)}
+                                                />
+                                            </Tooltip>
+                                        }
+                                    </TableCell>
                                     {!viewOnlyRoles.includes(user?.role) &&
                                         <TableCell sx={{ display: 'flex', justifyContent: 'space-evenly' }}>
                                             <Tooltip title='Edit' placement='top'>

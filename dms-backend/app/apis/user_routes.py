@@ -97,3 +97,18 @@ def update_user_role(user_id: int, user_data: UserRoleUpdate, current_user: Show
     db.refresh(user)
 
     return user.to_dict()
+
+
+@router.get("/mechanics", response_model=List[ShowUser], status_code=status.HTTP_200_OK)
+def get_all_mechanics(
+    station_id: int = Query(...,
+                            description="Station ID to filter mechanics"),
+    current_user: ShowUser = Depends(authenticate_user_token),
+    db: Session = Depends(get_db)
+):
+    mechanics = db.query(User).filter(
+        User.station_id == station_id,
+        User.role == 'Mechanic'
+    ).order_by(User.id).all()
+
+    return [mechanic.to_dict() for mechanic in mechanics]

@@ -9,6 +9,7 @@ export default {
     //Users
     getUsersUrl: organizationId => `/users?organization_id=${organizationId}`,
     userUrl: id => `/users/${id}/role`,
+    getMechanicsUrl: stationId => `/mechanics?station_id=${stationId}`,
     //Stations
     stationDataUrl: id => `/stations/${id}/data`,
     stationsUrl: '/stations',

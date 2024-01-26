@@ -15,8 +15,28 @@ import { backgroundColorSelector, statusColorSelector, urgencyColorSelector } fr
 import { useAuth } from 'src/hooks/useAuth'
 import { viewOnlyRoles } from 'src/utils/roleUtils'
 
-function TicketTile({ ticket, handleDeleteTicket, handleEditTicket, handleTicketStatusChange }) {
+function TicketTile(props) {
+    const {
+        ticket,
+        handleDeleteTicket,
+        handleEditTicket,
+        handleTicketStatusChange,
+        handleAssignMechanic
+    } = props;
     const { user } = useAuth();
+
+    const getOptions = () => {
+        const options = [
+            { text: 'Edit Ticket', menuItemProps: { onClick: () => handleEditTicket(ticket?.id) } },
+            { text: 'Mark In-progress', menuItemProps: { onClick: () => handleTicketStatusChange(ticket, 'In-progress') } },
+            { text: 'Complete Ticket', menuItemProps: { onClick: () => handleTicketStatusChange(ticket, 'Completed') } },
+            { text: 'Delete Ticket', menuItemProps: { sx: { color: 'error.main' }, onClick: () => handleDeleteTicket(ticket) } }
+        ]
+        if (!ticket?.mechanic)
+            options.push({ text: 'Assign Mechanic', menuItemProps: { onClick: () => handleAssignMechanic(ticket) } })
+
+        return options;
+    }
 
     return (
         <Card sx={{ backgroundColor: backgroundColorSelector[ticket?.urgency] }}>
@@ -38,13 +58,7 @@ function TicketTile({ ticket, handleDeleteTicket, handleEditTicket, handleTicket
                 action={
                     !viewOnlyRoles.includes(user?.role) && <OptionsMenu
                         iconButtonProps={{ size: 'small', sx: { color: 'text.disabled' } }}
-                        options={[
-                            { text: 'Edit Ticket', menuItemProps: { onClick: () => handleEditTicket(ticket?.id) } },
-                            { divider: true, dividerProps: { sx: { my: theme => `${theme.spacing(2)} !important` } } },
-                            { text: 'Mark In-progress', menuItemProps: { onClick: () => handleTicketStatusChange(ticket, 'In-progress') } },
-                            { text: 'Complete Ticket', menuItemProps: { onClick: () => handleTicketStatusChange(ticket, 'Completed') } },
-                            { text: 'Delete Ticket', menuItemProps: { sx: { color: 'error.main' }, onClick: () => handleDeleteTicket(ticket) } }
-                        ]}
+                        options={getOptions()}
                     />
                 }
                 title={
