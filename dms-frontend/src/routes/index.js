@@ -26,4 +26,6 @@ export default {
     createRoomUrl: '/rooms',
     roomUrl: id => `/rooms/${id}`,
     newRoomDataUrl: '/rooms/new',
+    //Comments
+    commentsUrl: (ticketId) => `/tickets/${ticketId}/comments`,
 };

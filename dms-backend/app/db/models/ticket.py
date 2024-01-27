@@ -22,6 +22,7 @@ class Ticket(Base):
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     station_id = Column(Integer, ForeignKey('stations.id'), nullable=False)
     mechanic_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    comments = relationship("Comment", back_populates="ticket")
 
     user = relationship("User", foreign_keys=[
                         user_id], backref="created_tickets")

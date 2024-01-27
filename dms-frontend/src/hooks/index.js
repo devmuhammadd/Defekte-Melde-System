@@ -4,6 +4,7 @@ import { useStationActions } from "src/redux/slices/StationSlice";
 import { useUserActions } from "src/redux/slices/UserSlice";
 import { useVehicleActions } from "src/redux/slices/VehicleSlice";
 import { useRoomActions } from "src/redux/slices/RoomSlice";
+import { useCommentActions } from "src/redux/slices/CommentSlice";
 
 export const useTicket = () => ({
     ...useSelector(state => state.ticketSlice),
@@ -28,4 +29,9 @@ export const useVehicle = () => ({
 export const useRoom = () => ({
     ...useSelector(state => state.roomSlice),
     ...useRoomActions()
+});
+
+export const useComment = () => ({
+    ...useSelector(state => state.commentSlice),
+    ...useCommentActions()
 });
