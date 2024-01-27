@@ -24,7 +24,7 @@ const Home = ({ hasQueryParams }) => {
       } else if (editTicket && ticketId) {
         return <EditTicket ticketId={ticketId} />;
       } else if (ticketId) {
-        return <ShowTicket />
+        return <ShowTicket ticketId={ticketId} />
       }
     } else {
       return <Dashboard />;
