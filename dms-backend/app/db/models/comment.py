@@ -17,7 +17,7 @@ class Comment(Base):
 
     def to_dict(self):
         formatted_created_at = self.created_at.strftime(
-            '%H:%M') if self.created_at else None
+            '%I:%M %p') if self.created_at else None
 
         return {
             'id': self.id,

@@ -1,4 +1,19 @@
-import { Box, Card, CardContent, CardMedia, Grid, IconButton, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material'
+import {
+  Box,
+  Card,
+  CardContent,
+  CardMedia,
+  Grid,
+  IconButton,
+  Paper,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Typography
+} from '@mui/material'
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast';
@@ -103,9 +118,17 @@ function ShowTicket({ ticketId }) {
                   </Stack>
                   <Box sx={{ marginTop: '16px', height: '430px', overflow: 'auto' }}>
                     {comments.map((comment) => (
-                      <Box sx={{ backgroundColor: '#544ee6', padding: '10px', marginTop: '10px', borderRadius: '10px', width: 'fit-content' }}>
+                      <Box sx={{
+                        backgroundColor: '#544ee6',
+                        padding: '10px',
+                        marginTop: '10px',
+                        borderRadius: '10px',
+                        width: 'fit-content'
+                      }}>
                         <Typography variant='body1' color='white'>{comment.message}</Typography>
-                        <Typography variant='body2' color='white' textAlign='end'>{comment.user} | {comment.createdAt}</Typography>
+                        <Typography variant='body2' color='white' textAlign='end'>
+                          {comment?.userId === user?.id ? 'You' : comment?.user} | {comment.createdAt}
+                        </Typography>
                       </Box>
                     ))}
                   </Box>
