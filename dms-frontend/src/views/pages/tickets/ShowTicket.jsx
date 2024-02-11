@@ -22,6 +22,7 @@ import CustomTextField from 'src/@core/components/mui/text-field';
 import { useComment, useTicket } from 'src/hooks';
 import { useAuth } from 'src/hooks/useAuth';
 import { ticketCreateRoles } from 'src/utils/roleUtils';
+import { isImage } from 'src/utils/ticketUtils';
 
 function ShowTicket({ ticketId }) {
   const router = useRouter();
@@ -60,8 +61,19 @@ function ShowTicket({ ticketId }) {
           <CardContent sx={{ display: 'flex', justifyContent: 'space-between', gap: '16px' }}>
             <Grid xs={12} md={6}>
               <Card>
-                {ticket?.image &&
-                  <CardMedia sx={{ height: '14.5625rem' }} image='/images/cards/glass-house.png' />
+                {
+                  ticket?.mediaUrl && (
+                    <Card sx={{ display: 'flex', justifyContent: 'center', margin: '20px', padding: '10px' }}>
+                      {isImage(ticket.mediaUrl) ? (
+                        <img src={ticket.mediaUrl} alt='Ticket Media' style={{ maxHeight: '300px' }} />
+                      ) : (
+                        <video controls style={{ maxHeight: '300px' }}>
+                          <source src={ticket.mediaUrl} type='video/mp4' />
+                          Your browser does not support the video tag.
+                        </video>
+                      )}
+                    </Card>
+                  )
                 }
                 <CardContent>
                   <TableContainer component={Paper}>

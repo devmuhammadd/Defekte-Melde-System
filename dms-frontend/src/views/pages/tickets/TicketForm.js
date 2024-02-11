@@ -31,7 +31,7 @@ const schema = yup.object().shape({
     urgency: yup.string().required(),
     stationId: yup.string().required(),
     location: yup.string().required(),
-    locationId: yup.string().required()
+    locationId: yup.string().required(),
 });
 
 const TicketForm = ({ title, onFormSubmit, ticket, successMessage }) => {
@@ -42,6 +42,7 @@ const TicketForm = ({ title, onFormSubmit, ticket, successMessage }) => {
     const [stationData, setStationData] = useState('');
     const [selectedStation, setSelectedStation] = useState(ticket?.stationId || '');
     const { stations, getStations } = useStation();
+    const [media, setMedia] = useState();
 
     useEffect(() => {
         if (!ticketCreateRoles.includes(user?.role)) router.push('/');
@@ -83,17 +84,32 @@ const TicketForm = ({ title, onFormSubmit, ticket, successMessage }) => {
 
     const onSubmit = async data => {
         try {
-            const params = data;
-            if (ticket) {
-                params['id'] = ticket?.id;
-                params['userId'] = ticket?.userId;
-                params['status'] = ticket?.status;
-                params['isDeleted'] = ticket?.isDeleted;
-            } else {
-                params['userId'] = user?.id;
-                params['status'] = 'Opened';
-                params['isDeleted'] = false;
+            if (media && media.size > 10 * 1024 * 1024) { // Check if media size is greater than 10 MB
+                toast.error("Media size should be less than 10MB!");
+                return;
             }
+
+            debugger;
+            const params = new FormData();
+            Object.keys(data).forEach(key => {
+                params.append(key, data[key]);
+            });
+
+            if (ticket) {
+                params.append('id', ticket?.id);
+                params.append('userId', ticket?.userId);
+                params.append('status', ticket?.status);
+                params.append('isDeleted', ticket?.isDeleted);
+            } else {
+                params.append('userId', user?.id);
+                params.append('status', 'Opened');
+                params.append('isDeleted', false);
+            }
+
+            if (media) {
+                params.append('mediaFile', media);
+            }
+
             await onFormSubmit(params);
             router.push('/tickets');
             toast.success(successMessage);
@@ -249,6 +265,16 @@ const TicketForm = ({ title, onFormSubmit, ticket, successMessage }) => {
                                     />
                                 </Grid>
                             </>}
+                        <Grid item xs={12}>
+
+                            <input
+                                type="file"
+                                onChange={(event) => {
+                                    setMedia(event.target.files[0]);
+                                }}
+                                accept="image/*, video/*"
+                            />
+                        </Grid>
                         <Grid item xs={12}>
                             <Controller
                                 name='description'

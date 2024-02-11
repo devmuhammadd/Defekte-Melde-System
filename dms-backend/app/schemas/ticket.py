@@ -1,5 +1,6 @@
 from typing import Optional
 from pydantic import BaseModel
+from fastapi import UploadFile, File
 
 
 class TicketBase(BaseModel):
@@ -14,6 +15,7 @@ class TicketBase(BaseModel):
     station_id: int
     is_deleted: bool
     mechanic_id: Optional[int] = None
+    # media_file: Optional[UploadFile] = None
 
 
 class TicketCreate(TicketBase):
@@ -41,6 +43,7 @@ class ShowTicket(BaseModel):
     is_deleted: bool
     mechanic: Optional[str] = None
     mechanic_id: Optional[int] = None
+    media_url: Optional[str] = None
 
     class Config:
         from_attributes = True
