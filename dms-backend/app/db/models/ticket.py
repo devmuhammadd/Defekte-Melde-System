@@ -22,6 +22,8 @@ class Ticket(Base):
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     station_id = Column(Integer, ForeignKey('stations.id'), nullable=False)
     mechanic_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    comments = relationship("Comment", back_populates="ticket")
+    media_url = Column(String)
 
     user = relationship("User", foreign_keys=[
                         user_id], backref="created_tickets")
@@ -48,6 +50,7 @@ class Ticket(Base):
             'is_deleted': self.is_deleted,
             'mechanic': self.mechanic.full_name if self.mechanic else None,
             'mechanic_id': self.mechanic.id if self.mechanic else None,
+            'media_url': self.media_url,
         }
 
     def get_location(self):
@@ -74,11 +77,9 @@ def get_unique_status_counts(current_user, db: Session):
             )
         )
 
-        if current_user['role'] in 'Chief':
+        if current_user['role'] in ['Chief', 'Reporter', 'Mechanic']:
             query = query.filter(Ticket.station_id ==
                                  current_user['station_id'])
-        elif current_user['role'] in ['Reporter', 'Mechanic']:
-            query = query.filter(Ticket.user_id == current_user['id'])
 
         status_counts = (
             query

@@ -7,7 +7,8 @@ const CriticalTickets = (props) => {
         handleDeleteTicket,
         handleEditTicket,
         handleTicketStatusChange,
-        handleAssignMechanic
+        handleAssignMechanic,
+        handleViewTicket
     } = props;
 
     return (
@@ -21,6 +22,7 @@ const CriticalTickets = (props) => {
                             handleEditTicket={handleEditTicket}
                             handleTicketStatusChange={handleTicketStatusChange}
                             handleAssignMechanic={handleAssignMechanic}
+                            handleViewTicket={handleViewTicket}
                         />
                     </Grid>
                 )

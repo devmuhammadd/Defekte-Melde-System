@@ -52,6 +52,10 @@ const Dashboard = () => {
     }
 
     const handleEditTicket = (ticketId) => {
+        router.push(`/tickets?editTicket=true&ticketId=${ticketId}`);
+    }
+
+    const handleViewTicket = (ticketId) => {
         router.push(`/tickets?ticketId=${ticketId}`);
     }
 
@@ -105,6 +109,7 @@ const Dashboard = () => {
                     handleEditTicket={handleEditTicket}
                     handleTicketStatusChange={handleTicketStatusChange}
                     handleAssignMechanic={handleAssignMechanic}
+                    handleViewTicket={handleViewTicket}
                 />
             </Grid>
             <Grid item xs={12}>
@@ -114,6 +119,7 @@ const Dashboard = () => {
                     handleEditTicket={handleEditTicket}
                     handleTicketStatusChange={handleTicketStatusChange}
                     handleAssignMechanic={handleAssignMechanic}
+                    handleViewTicket={handleViewTicket}
                 />
                 {
                     assignMechanicTicket &&

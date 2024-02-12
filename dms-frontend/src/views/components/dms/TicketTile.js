@@ -21,12 +21,14 @@ function TicketTile(props) {
         handleDeleteTicket,
         handleEditTicket,
         handleTicketStatusChange,
-        handleAssignMechanic
+        handleAssignMechanic,
+        handleViewTicket
     } = props;
     const { user } = useAuth();
 
     const getOptions = () => {
         const options = [
+            { text: 'View Ticket', menuItemProps: { onClick: () => handleViewTicket(ticket?.id) } },
             { text: 'Edit Ticket', menuItemProps: { onClick: () => handleEditTicket(ticket?.id) } },
             { text: 'Mark In-progress', menuItemProps: { onClick: () => handleTicketStatusChange(ticket, 'In-progress') } },
             { text: 'Complete Ticket', menuItemProps: { onClick: () => handleTicketStatusChange(ticket, 'Completed') } },

@@ -2,7 +2,7 @@
 from app.schemas.room import ShowRoom, RoomCreate, RoomUpdate
 from app.utils.user import authenticate_user_token
 from app.schemas.user import ShowUser
-from fastapi import APIRouter, Depends, HTTPException, status, Query
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.db.session import get_db
 from typing import List

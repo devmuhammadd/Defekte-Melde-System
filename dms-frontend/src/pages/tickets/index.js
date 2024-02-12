@@ -5,11 +5,12 @@ import { notAllowedRoles } from 'src/utils/roleUtils';
 import Dashboard from 'src/views/pages/tickets/Dashboard';
 import EditTicket from 'src/views/pages/tickets/EditTicket';
 import NewTicket from 'src/views/pages/tickets/NewTicket';
+import ShowTicket from 'src/views/pages/tickets/ShowTicket';
 
 const Home = ({ hasQueryParams }) => {
   const router = useRouter();
   const { user } = useAuth();
-  const { newTicket, ticketId } = router?.query;
+  const { newTicket, editTicket, ticketId } = router?.query;
 
   useEffect(() => {
     if (notAllowedRoles.includes(user?.role)) router.push('/');
@@ -20,8 +21,10 @@ const Home = ({ hasQueryParams }) => {
     if (hasQueryParams) {
       if (newTicket) {
         return <NewTicket />;
-      } else if (ticketId) {
+      } else if (editTicket && ticketId) {
         return <EditTicket ticketId={ticketId} />;
+      } else if (ticketId) {
+        return <ShowTicket ticketId={ticketId} />
       }
     } else {
       return <Dashboard />;

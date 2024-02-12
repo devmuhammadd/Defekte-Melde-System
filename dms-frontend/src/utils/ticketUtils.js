@@ -46,3 +46,7 @@ export const calculateTicketStats = (stats) => {
         }
     ];
 }
+
+export const isImage = (url) => {
+    return /\.(jpeg|jpg|gif|png)$/i.test(url);
+}
