@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 
 // ** MUI Imports
-import { Radio, RadioGroup, FormControlLabel, Typography } from '@mui/material';
+import { Radio, RadioGroup, FormControlLabel, Typography, TextField } from '@mui/material';
 import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
@@ -22,7 +22,8 @@ import { useRouter } from 'next/router'
 import { useAuth } from 'src/hooks/useAuth'
 import toast from 'react-hot-toast'
 import { ticketCreateRoles } from 'src/utils/roleUtils';
-import { useStation } from 'src/hooks';
+import { useStation, useTicket } from 'src/hooks';
+import { LoadingButton } from '@mui/lab';
 
 const schema = yup.object().shape({
     title: yup.string().required(),
@@ -42,6 +43,7 @@ const TicketForm = ({ title, onFormSubmit, ticket, successMessage }) => {
     const [stationData, setStationData] = useState('');
     const [selectedStation, setSelectedStation] = useState(ticket?.stationId || '');
     const { stations, getStations } = useStation();
+    const { loading } = useTicket();
     const [media, setMedia] = useState();
 
     useEffect(() => {
@@ -265,14 +267,16 @@ const TicketForm = ({ title, onFormSubmit, ticket, successMessage }) => {
                                     />
                                 </Grid>
                             </>}
-                        <Grid item xs={12}>
-
-                            <input
+                        <Grid item xs={12} sm={6}>
+                            <CustomTextField
+                                id="fileInput"
                                 type="file"
+                                label="Media"
+                                fullWidth
+                                InputProps={{ inputProps: { accept: "image/*, video/*" } }}
                                 onChange={(event) => {
                                     setMedia(event.target.files[0]);
                                 }}
-                                accept="image/*, video/*"
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -300,9 +304,9 @@ const TicketForm = ({ title, onFormSubmit, ticket, successMessage }) => {
                 </CardContent>
                 <Divider sx={{ m: '0 !important' }} />
                 <CardActions sx={{ justifyContent: 'flex-end' }}>
-                    <Button type='submit' sx={{ mr: 2 }} variant='contained'>
+                    <LoadingButton type='submit' sx={{ mar: 2 }} variant='contained' loading={loading}>
                         Submit
-                    </Button>
+                    </LoadingButton>
                     <Button type='reset' color='secondary' variant='tonal' onClick={handleCancel}>
                         Cancel
                     </Button>

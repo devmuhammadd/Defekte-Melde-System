@@ -95,7 +95,7 @@ const TicketsTable = (props) => {
                                             </Tooltip>
                                         }
                                     </TableCell>
-                                    <TableCell sx={{ display: 'flex', justifyContent: 'space-evenly' }}>
+                                    <TableCell>
                                         <Tooltip title='View' placement='top'>
                                             <Icon icon="carbon:view" width="24" height="24"
                                                 style={{ cursor: 'pointer' }}
@@ -106,25 +106,25 @@ const TicketsTable = (props) => {
                                             <>
                                                 <Tooltip title='Edit' placement='top'>
                                                     <Icon icon="tabler:edit" width="24" height="24"
-                                                        style={{ cursor: 'pointer' }}
+                                                        style={{ cursor: 'pointer', marginLeft: '10px' }}
                                                         onClick={() => handleEditTicket(ticket?.id)}
                                                     />
                                                 </Tooltip>
                                                 <Tooltip title='Mark In-Progress' placement='top'>
                                                     <Icon icon="carbon:in-progress" width="24" height="24"
-                                                        style={{ cursor: 'pointer' }}
+                                                        style={{ cursor: 'pointer', marginLeft: '10px' }}
                                                         onClick={() => handleTicketStatusChange(ticket, 'In-progress')}
                                                     />
                                                 </Tooltip>
                                                 <Tooltip title='Mark as Completed' placement='top'>
                                                     <Icon icon="mdi:tick-outline" width="24" height="24"
-                                                        style={{ cursor: 'pointer' }}
+                                                        style={{ cursor: 'pointer', marginLeft: '10px' }}
                                                         onClick={() => handleTicketStatusChange(ticket, 'Completed')}
                                                     />
                                                 </Tooltip>
                                                 <Tooltip title='Delete' placement='top'>
                                                     <Icon icon="material-symbols:delete-outline" width="24" height="24"
-                                                        style={{ cursor: 'pointer' }}
+                                                        style={{ cursor: 'pointer', marginLeft: '10px' }}
                                                         onClick={() => handleDeleteTicket(ticket)}
                                                     />
                                                 </Tooltip>
