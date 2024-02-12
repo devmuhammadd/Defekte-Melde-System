@@ -91,7 +91,6 @@ const TicketForm = ({ title, onFormSubmit, ticket, successMessage }) => {
                 return;
             }
 
-            debugger;
             const params = new FormData();
             Object.keys(data).forEach(key => {
                 params.append(key, data[key]);
