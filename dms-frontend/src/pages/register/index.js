@@ -6,8 +6,6 @@ import Link from 'next/link'
 
 // ** MUI Components
 import Button from '@mui/material/Button'
-import Divider from '@mui/material/Divider'
-import Checkbox from '@mui/material/Checkbox'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
 import Box from '@mui/material/Box'
@@ -35,6 +33,7 @@ import * as yup from 'yup'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useAuth } from 'src/hooks/useAuth'
+import toast from 'react-hot-toast'
 
 // ** Styled Components
 const RegisterIllustration = styled('img')(({ theme }) => ({
@@ -68,14 +67,6 @@ const LinkStyled = styled(Link)(({ theme }) => ({
   color: `${theme.palette.primary.main} !important`
 }))
 
-const FormControlLabel = styled(MuiFormControlLabel)(({ theme }) => ({
-  marginTop: theme.spacing(1.5),
-  marginBottom: theme.spacing(1.75),
-  '& .MuiFormControlLabel-label': {
-    color: theme.palette.text.secondary
-  }
-}))
-
 const schema = yup.object().shape({
   email: yup.string().email().required(),
   username: yup.string().required(),
@@ -98,7 +89,6 @@ const Register = () => {
 
   const {
     control,
-    setError,
     handleSubmit,
     formState: { errors }
   } = useForm({
@@ -107,12 +97,9 @@ const Register = () => {
   })
 
   const onSubmit = data => {
-    const { email, username, password, fullName } = data
-    auth.register({ email, username, password, fullName }, () => {
-      setError('username', {
-        type: 'manual',
-        message: 'Unable to create an account with this username!'
-      })
+    const { email, username, password, fullName } = data;
+    auth.register({ email, username, password, fullName }, (err) => {
+      toast.error(err?.response?.data?.detail || "Unable to proceed!");
     })
   }
 

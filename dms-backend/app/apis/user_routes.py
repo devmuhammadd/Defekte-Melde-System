@@ -15,6 +15,14 @@ router = APIRouter()
 
 @router.post("/register", response_model=UserToken, status_code=status.HTTP_201_CREATED)
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
+    is_exist = db.query(User).filter(
+        (User.username == user.username) | (User.email == user.email)).first()
+    if is_exist:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="User already exist with this username or email!",
+        )
+
     user = create_new_user(user=user, db=db)
     access_token = create_access_token(
         data={"sub": user.username}
@@ -24,16 +32,25 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
 
 @router.post("/login", response_model=UserToken)
 def login_for_access_token(user_data: UserLogin, db: Session = Depends(get_db)):
+    is_exist = db.query(User).filter(
+        User.username == user_data.username).first()
+    if not is_exist:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No user exist with this username!",
+        )
+
     user = authenticate_user_credentials(
         user_data.username, user_data.password, db)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
+            detail="Incorrect username or password!",
         )
     access_token = create_access_token(
         data={"sub": user.username}
     )
+
     return {"token": {"access_token": access_token, "token_type": "bearer"}, "user": user.to_dict()}
 
 
