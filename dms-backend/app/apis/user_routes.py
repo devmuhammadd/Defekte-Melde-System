@@ -70,7 +70,7 @@ def update_user_profile(user_payload: UserProfileUpdate, current_user: ShowUser 
 @router.put("/password", status_code=status.HTTP_200_OK)
 def update_user_password(password_payload: PasswordUpdate, current_user: ShowUser = Depends(authenticate_user_token), db: Session = Depends(get_db)):
     is_updated = update_password(
-        current_user.username, password_payload, db)
+        current_user['username'], password_payload, db)
 
     if not is_updated:
         raise HTTPException(
