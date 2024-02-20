@@ -11,7 +11,7 @@ import { Tooltip } from '@mui/material'
 import { useAuth } from 'src/hooks/useAuth'
 import { viewOnlyRoles } from 'src/utils/roleUtils'
 
-const UsersTable = ({ users, handleEditUser }) => {
+const UsersTable = ({ users, handleEditUser, handleResetPassword }) => {
     const auth = useAuth();
 
     return (
@@ -54,6 +54,12 @@ const UsersTable = ({ users, handleEditUser }) => {
                                                 : <Tooltip title='Role Assigned' placement='top'>
                                                     <Icon icon="fluent-mdl2:completed-solid" width="24" height="24" color='green' />
                                                 </Tooltip>}
+                                            <Tooltip title='Reset Password' placement='top'>
+                                                <Icon icon="material-symbols:password" width="24" height="24"
+                                                    style={{ cursor: 'pointer' }}
+                                                    onClick={() => handleResetPassword(user?.username)}
+                                                />
+                                            </Tooltip>
                                         </TableCell>
                                     }
                                 </TableRow>

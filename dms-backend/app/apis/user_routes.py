@@ -1,14 +1,15 @@
 from typing import List
-from app.utils.user import authenticate_user_token, create_access_token, authenticate_user_credentials
-from app.db.models.user import User, create_new_user, update_password, update_user
-from app.db.models.station import Station
-from app.db.session import get_db
-from fastapi import APIRouter, HTTPException, Query
-from fastapi import Depends
 from fastapi import status
-from app.schemas.user import PasswordUpdate, ShowUser, UserCreate, UserLogin, UserProfileUpdate, UserRoleUpdate
-from app.schemas.user_token import UserToken
+from fastapi import Depends
+from app.db.session import get_db
 from sqlalchemy.orm import Session
+from app.core.hashing import Hasher
+from app.db.models.station import Station
+from app.schemas.user_token import UserToken
+from fastapi import APIRouter, HTTPException, Query
+from app.db.models.user import User, create_new_user, update_password, update_user
+from app.utils.user import authenticate_user_token, create_access_token, authenticate_user_credentials
+from app.schemas.user import AdminResetPassword, PasswordUpdate, ShowUser, UserCreate, UserLogin, UserProfileUpdate, UserRoleUpdate
 
 router = APIRouter()
 
@@ -77,6 +78,23 @@ def update_user_password(password_payload: PasswordUpdate, current_user: ShowUse
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Unable to updated password!",
         )
+
+    return {"detail": "Password updated successfully!"}
+
+
+@router.put("/admin-reset-password", status_code=status.HTTP_200_OK)
+def reset_password_by_admin(password_payload: AdminResetPassword, current_user: ShowUser = Depends(authenticate_user_token), db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.username ==
+                                 password_payload.username).first()
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Something went wrong!",
+        )
+
+    user.password = Hasher.get_password_hash(password_payload.password)
+    db.commit()
+    db.refresh(user)
 
     return {"detail": "Password updated successfully!"}
 

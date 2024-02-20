@@ -10,6 +10,7 @@ export default {
     getUsersUrl: organizationId => `/users?organization_id=${organizationId}`,
     userUrl: id => `/users/${id}/role`,
     getMechanicsUrl: stationId => `/mechanics?station_id=${stationId}`,
+    resetPasswordByAdmin: '/admin-reset-password',
     //Stations
     stationDataUrl: id => `/stations/${id}/data`,
     stationsUrl: '/stations',

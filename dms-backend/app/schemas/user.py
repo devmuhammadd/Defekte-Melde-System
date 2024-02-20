@@ -46,3 +46,8 @@ class UserLogin(BaseModel):
 class PasswordUpdate(BaseModel):
     current_password: str = Field(min_length=6)
     new_password: str = Field(min_length=6)
+
+
+class AdminResetPassword(BaseModel):
+    username: str
+    password: str = Field(min_length=6)
