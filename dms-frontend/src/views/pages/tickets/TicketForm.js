@@ -270,7 +270,7 @@ const TicketForm = ({ title, onFormSubmit, ticket, successMessage }) => {
                             <CustomTextField
                                 id="fileInput"
                                 type="file"
-                                label="Media"
+                                label="Attach Image/Video"
                                 fullWidth
                                 InputProps={{ inputProps: { accept: "image/*, video/*" } }}
                                 onChange={(event) => {
