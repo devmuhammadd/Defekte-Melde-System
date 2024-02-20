@@ -9,7 +9,7 @@ import TableContainer from '@mui/material/TableContainer'
 import { Icon } from '@iconify/react'
 import { Tooltip } from '@mui/material'
 import { useAuth } from 'src/hooks/useAuth'
-import { viewOnlyRoles } from 'src/utils/roleUtils'
+import { adminRoles, viewOnlyRoles } from 'src/utils/roleUtils'
 
 const UsersTable = ({ users, handleEditUser, handleResetPassword }) => {
     const auth = useAuth();
@@ -54,12 +54,13 @@ const UsersTable = ({ users, handleEditUser, handleResetPassword }) => {
                                                 : <Tooltip title='Role Assigned' placement='top'>
                                                     <Icon icon="fluent-mdl2:completed-solid" width="24" height="24" color='green' />
                                                 </Tooltip>}
-                                            <Tooltip title='Reset Password' placement='top'>
-                                                <Icon icon="material-symbols:password" width="24" height="24"
-                                                    style={{ cursor: 'pointer' }}
-                                                    onClick={() => handleResetPassword(user?.username)}
-                                                />
-                                            </Tooltip>
+                                            {adminRoles.includes(auth?.user?.role) &&
+                                                <Tooltip title='Reset Password' placement='top'>
+                                                    <Icon icon="material-symbols:password" width="24" height="24"
+                                                        style={{ cursor: 'pointer' }}
+                                                        onClick={() => handleResetPassword(user?.username)}
+                                                    />
+                                                </Tooltip>}
                                         </TableCell>
                                     }
                                 </TableRow>
